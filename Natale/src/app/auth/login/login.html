@@ -1,0 +1,33 @@
+<h1>Login</h1>
+
+<form (ngSubmit)="onLogin()">
+  <div>
+    <label for="email">Email</label>
+    <input
+      type="email"
+      id="email"
+      [(ngModel)]="email"
+      name="email"
+      required
+    />
+  </div>
+
+  <div>
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      [(ngModel)]="password"
+      name="password"
+      required
+    />
+  </div>
+
+  <button type="submit">Accedi</button>
+</form>
+
+<p>Non hai un account? <a routerLink="/register">Registrati</a></p>
+
+@if (error()) {
+  <p style="color: red;">{{ error() }}</p>
+}
