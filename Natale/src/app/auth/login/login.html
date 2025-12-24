@@ -1,33 +1,42 @@
-<h1>Login</h1>
+<div class="login-container">
+  <div class="login-card">
+    <h1>Accedi</h1>
 
-<form (ngSubmit)="onLogin()">
-  <div>
-    <label for="email">Email</label>
-    <input
-      type="email"
-      id="email"
-      [(ngModel)]="email"
-      name="email"
-      required
-    />
+    <form (ngSubmit)="onLogin()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          required
+          placeholder="esempio@email.com"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          placeholder="Inserisci la password"
+        />
+      </div>
+
+      <button type="submit">Accedi</button>
+    </form>
+
+    <p class="register-link">
+      Non hai un account?
+      <a routerLink="/register">Registrati</a>
+    </p>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
   </div>
-
-  <div>
-    <label for="password">Password</label>
-    <input
-      type="password"
-      id="password"
-      [(ngModel)]="password"
-      name="password"
-      required
-    />
-  </div>
-
-  <button type="submit">Accedi</button>
-</form>
-
-<p>Non hai un account? <a routerLink="/register">Registrati</a></p>
-
-@if (error()) {
-  <p style="color: red;">{{ error() }}</p>
-}
+</div>
