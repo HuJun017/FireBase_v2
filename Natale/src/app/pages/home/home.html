@@ -1,3 +1,19 @@
-<p>home works!</p>
+<div class="home-container">
+  <div class="home-card">
+    <h1>Benvenuto nella Libreria 📚</h1>
 
-<button (click)="onLogout()">Logout</button>
+    <p class="subtitle">
+      Gestisci i tuoi libri in modo semplice e sicuro.
+    </p>
+
+    <div class="actions">
+      <a routerLink="/library" class="btn primary">
+        Vai alla Libreria
+      </a>
+
+      <button class="btn secondary" (click)="onLogout()">
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
