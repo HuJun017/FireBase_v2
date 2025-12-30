@@ -1,19 +1,48 @@
-<div class="home-container">
-  <div class="home-card">
-    <h1>Benvenuto nella Libreria 📚</h1>
+<section>
 
-    <p class="subtitle">
-      Gestisci i tuoi libri in modo semplice e sicuro.
-    </p>
+  <!-- Titolo pagina -->
+  <h1>Biblioteca</h1>
 
-    <div class="actions">
-      <a routerLink="/library" class="btn primary">
-        Vai alla Libreria
-      </a>
+  <div>
 
-      <button class="btn secondary" (click)="onLogout()">
-        Logout
-      </button>
-    </div>
+    <!-- Colonna sinistra: categorie -->
+    <aside>
+      <h2>Categorie</h2>
+
+      <ul>
+        <li>Narrativa</li>
+        <li>Fantasy</li>
+        <li>Saggistica</li>
+        <li>Storico</li>
+      </ul>
+    </aside>
+
+    <!-- Area principale: libri -->
+    <main>
+
+      <h2>Libri disponibili</h2>
+
+      <!-- Lista libri -->
+      <div>
+
+        <!-- Libro -->
+        <article>
+          <p>Titolo libro</p>
+          <p>Autore</p>
+          <p>Disponibile</p>
+        </article>
+
+        <!-- Libro -->
+        <article>
+          <p>Titolo libro</p>
+          <p>Autore</p>
+          <p>In prestito</p>
+        </article>
+
+      </div>
+
+    </main>
+
   </div>
-</div>
+
+</section>
