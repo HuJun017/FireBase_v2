@@ -23,7 +23,7 @@ export class Login {
   async onLogin() {
     try {
       await this.authService.login(this.email(), this.password());
-      this.router.navigate(['/home']);
+      this.router.navigate(['/mesg']);
     } catch (error: any) {
       this.error.set(error.message);
     }
