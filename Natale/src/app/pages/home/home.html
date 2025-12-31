@@ -1,48 +1,44 @@
-<section>
+<!-- Header -->
+<header class="header">
+  <h1>📚 Biblioteca</h1>
+  <button class="logout-btn" (click)="onLogout()">Logout</button>
+</header>
 
-  <!-- Titolo pagina -->
-  <h1>Biblioteca</h1>
+<!-- Contenuto principale -->
+<main class="container">
+  <h2>Libri disponibili</h2>
 
-  <div>
+  <!-- Lista libri -->
+  <section class="books-grid">
+    <!-- Singolo libro -->
+    <article class="book-card" *ngFor="let book of books">
+      <h3>{{ book.title }}</h3>
 
-    <!-- Colonna sinistra: categorie -->
-    <aside>
-      <h2>Categorie</h2>
+      <p><strong>Autore:</strong> {{ book.author }}</p>
+      <p><strong>Categoria:</strong> {{ book.category }}</p>
 
-      <ul>
-        <li>Narrativa</li>
-        <li>Fantasy</li>
-        <li>Saggistica</li>
-        <li>Storico</li>
-      </ul>
-    </aside>
+      <p
+        class="availability available"
+        *ngIf="book.available_copies > 0"
+      >
+        Disponibile ({{ book.available_copies }} copie)
+      </p>
 
-    <!-- Area principale: libri -->
-    <main>
+      <p
+        class="availability unavailable"
+        *ngIf="book.available_copies === 0"
+      >
+        Non disponibile
+      </p>
 
-      <h2>Libri disponibili</h2>
+      <button
+        class="rent-btn"
+        [disabled]="book.available_copies === 0"
+        (click)="noleggiaLibro(book)"
+      >
+        Noleggia
+      </button>
+    </article>
 
-      <!-- Lista libri -->
-      <div>
-
-        <!-- Libro -->
-        <article>
-          <p>Titolo libro</p>
-          <p>Autore</p>
-          <p>Disponibile</p>
-        </article>
-
-        <!-- Libro -->
-        <article>
-          <p>Titolo libro</p>
-          <p>Autore</p>
-          <p>In prestito</p>
-        </article>
-
-      </div>
-
-    </main>
-
-  </div>
-
-</section>
+  </section>
+</main>

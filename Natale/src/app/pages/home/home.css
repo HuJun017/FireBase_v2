@@ -1,72 +1,94 @@
-.home-container {
-  position: fixed;
-  inset: 0;
+/* Reset base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Header */
+.header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #2c3e50;
+  color: white;
 }
 
-.home-card {
-  background: white;
-  padding: 2.5rem;
-  width: 100%;
-  max-width: 500px;
-  border-radius: 14px;
-  text-align: center;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+.logout-btn {
+  background-color: #e74c3c;
+  border: none;
+  padding: 10px 16px;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.home-card h1 {
-  margin-bottom: 0.8rem;
-  color: #333;
+.logout-btn:hover {
+  background-color: #c0392b;
 }
 
-.subtitle {
-  color: #666;
-  margin-bottom: 2rem;
-  font-size: 1rem;
+/* Contenitore principale */
+.container {
+  padding: 30px;
 }
 
-.actions {
+.container h2 {
+  margin-bottom: 20px;
+}
+
+/* Griglia libri */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+/* Card libro */
+.book-card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 6px;
+  background-color: #fafafa;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 8px;
 }
 
-.btn {
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-size: 1rem;
+.book-card h3 {
+  color: #2c3e50;
+}
+
+/* Disponibilità */
+.availability {
   font-weight: bold;
-  cursor: pointer;
-  text-decoration: none;
+}
+
+.available {
+  color: green;
+}
+
+.unavailable {
+  color: red;
+}
+
+/* Bottone noleggio */
+.rent-btn {
+  margin-top: auto;
+  padding: 10px;
   border: none;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
-
-/* Pulsante principale */
-.btn.primary {
-  background-color: #667eea;
+  border-radius: 4px;
+  background-color: #3498db;
   color: white;
+  cursor: pointer;
 }
 
-.btn.primary:hover {
-  background-color: #5a67d8;
+.rent-btn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
 }
 
-/* Pulsante logout */
-.btn.secondary {
-  background-color: #e53e3e;
-  color: white;
-}
-
-.btn.secondary:hover {
-  background-color: #c53030;
+.rent-btn:not(:disabled):hover {
+  background-color: #2980b9;
 }
