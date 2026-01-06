@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +9,7 @@ import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

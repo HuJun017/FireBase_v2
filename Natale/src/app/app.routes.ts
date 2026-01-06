@@ -5,6 +5,7 @@ import { Login } from './auth/login/login';
 import { Register } from './auth/register/register';
 import { Mesg } from './pages/mesg/mesg';
 import { Profilo } from './pages/profilo/profilo';
+import { BookDetail } from './pages/book-detail/book-detail';
 
 export const routes: Routes = [
     //sintassi di authGuard
@@ -14,5 +15,6 @@ export const routes: Routes = [
     { path: 'register', component: Register },
     { path: 'mesg', component: Mesg },
     { path: 'profile', component: Profilo },
+    { path: 'book/:id', component: BookDetail },
     { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];

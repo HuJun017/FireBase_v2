@@ -41,7 +41,14 @@
         : 'Non disponibile' }}
     </p>
 
-    </article>
+    <!-- Bottone Visualizza -->
+    <button
+      class="view-btn"
+      [routerLink]="['/book', book.id]"
+    >
+      Visualizza
+    </button>
 
+    </article>
   </section>
 </main>
