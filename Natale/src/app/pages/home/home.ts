@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HomeService, Book } from '../../services/home-service';
+import { HomeService } from '../../services/home-service';
 import { ChangeDetectorRef } from '@angular/core';
 
 
@@ -15,7 +15,7 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class Home {
 
-  books: Book[] = [];
+  book: any[] = [];
   loading = true;
   error = false;
 
@@ -30,37 +30,26 @@ export class Home {
   /*------------------------*/
 
   ngOnInit(): void {
-    this.loadBooks();
-  }
-  
-  /*-----funzione per caricare i libri----------*/
-  loadBooks(): void {
-    this.homeService.getBooks().subscribe({
-      next: (data) => {
-        console.log('dati passati')
-        this.books = data;
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Errore nel caricamento dei libri', err);
-        this.error = true;
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
-  }
-  /*-------funzione per il noleggio del libro---------*/
-  noleggiaLibro(book: any): void {
-    this.homeService.rentBook(book.ID).subscribe({
-      next: () => {
-        this.loadBooks();
-      },
-      error: () => {
-        alert('Libro non disponibile');
-      }
-    });
-  }
+  this.loadBooks();
+}
+
+/*----- funzione per caricare i libri dal HomeService ----------*/
+loadBooks(): void {
+  this.homeService.getBook().subscribe({
+    next: (data) => {
+      console.log('Libri caricati correttamente');
+      this.book = data;
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error('Errore nel caricamento dei libri', err);
+      this.error = true;
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   /*-------funzione di logout-------*/
   async onLogout() {

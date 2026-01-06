@@ -9,35 +9,38 @@
   <h2>Libri disponibili</h2>
 
   <!-- Lista libri -->
-  <section class="books-grid">
-    <!-- Singolo libro -->
-    <article class="book-card" *ngFor="let book of books">
-      <h3>{{ book.title }}</h3>
+<section class="books-grid">
+  <!-- Singolo libro -->
+  <article class="book-card" *ngFor="let book of book">
+    
+    <!-- Immagine libro -->
+    <img *ngIf="book.image" [src]="book.image" alt="{{ book.title }}" class="book-image">
 
-      <p><strong>Autore:</strong> {{ book.author }}</p>
-      <p><strong>Categoria:</strong> {{ book.category }}</p>
+    <!-- Titolo -->
+    <h3>{{ book.title }}</h3>
 
-      <p
-        class="availability available"
-        *ngIf="book.available_copies > 0"
-      >
-        Disponibile ({{ book.available_copies }} copie)
-      </p>
+    <!-- Autore -->
+    <p><strong>Autore:</strong> {{ book.author }}</p>
 
-      <p
-        class="availability unavailable"
-        *ngIf="book.available_copies === 0"
-      >
-        Non disponibile
-      </p>
+    <!-- Categoria -->
+    <p><strong>Categoria:</strong> {{ book.category }}</p>
 
-      <button
-        class="rent-btn"
-        [disabled]="book.available_copies === 0"
-        (click)="noleggiaLibro(book)"
-      >
-        Noleggia
-      </button>
+    <!-- Anno -->
+    <p><strong>Anno:</strong> {{ book.year }}</p>
+
+    <!-- Descrizione -->
+    <p><strong>Descrizione:</strong> {{ book.description }}</p>
+
+    <!-- Copie disponibili -->
+    <p
+      class="availability"
+      [ngClass]="book.available_copies > 0 ? 'available' : 'unavailable'"
+    >
+      {{ book.available_copies > 0 
+        ? 'Disponibile (' + book.available_copies + ' di ' + book.total_copies + ' copie)' 
+        : 'Non disponibile' }}
+    </p>
+
     </article>
 
   </section>
