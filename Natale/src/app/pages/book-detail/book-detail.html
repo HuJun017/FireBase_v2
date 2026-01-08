@@ -1,1 +1,45 @@
-<p>book-detail works!</p>
+<!-- book-detail.html - VERSIONE TEST -->
+<div>
+
+  <!-- DEBUG SEMPRE VISIBILE -->
+  <div style="background: yellow; padding: 10px; margin-bottom: 20px;">
+    <h3>DEBUG:</h3>
+    <p>loading = {{loading}}</p>
+    <p>error = {{error}}</p>
+    <p>book esiste? = {{!!book}}</p>
+    <p *ngIf="book">book.title = {{book.title}}</p>
+    <p *ngIf="book">book.id = {{book.id}}</p>
+  </div>
+
+  <!-- SOLO UNA CONDIZIONE ALLA VOLTA -->
+  <ng-container *ngIf="loading; else notLoading">
+    <h1>CARICAMENTO IN CORSO...</h1>
+  </ng-container>
+
+  <ng-template #notLoading>
+    <ng-container *ngIf="error; else hasBook">
+      <h1>ERRORE: {{error}}</h1>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #hasBook>
+    <ng-container *ngIf="book">
+      <h1>LIBRO TROVATO!</h1>
+      <h2>Titolo: {{book.title}}</h2>
+      <p>Autore: {{book.author || 'N/A'}}</p>
+      <p>Categoria: {{book.category || 'N/A'}}</p>
+      <p>Anno: {{book.year || 'N/A'}}</p>
+      <p>Copie: {{book.available_copies}}/{{book.total_copies}}</p>
+      
+      <div *ngIf="book.image">
+        <img [src]="book.image" alt="{{book.title}}" style="max-width: 200px;">
+      </div>
+      
+      <div *ngIf="book.description">
+        <h3>Descrizione:</h3>
+        <p>{{book.description}}</p>
+      </div>
+    </ng-container>
+  </ng-template>
+
+</div>
