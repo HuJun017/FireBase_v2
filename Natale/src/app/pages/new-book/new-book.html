@@ -1,0 +1,173 @@
+<div class="page-container">
+  <div class="container">
+    <div class="header">
+      <h1>📚 Aggiungi Nuovo Libro</h1>
+      <p>Compila il form per aggiungere un libro alla biblioteca</p>
+    </div>
+
+    <div class="form-content">
+      <!-- Messaggio di successo -->
+      <div class="success-message" *ngIf="showSuccessMessage">
+        ✓ Libro aggiunto con successo!
+      </div>
+
+      <form #bookForm="ngForm" (ngSubmit)="onSubmit()">
+        <!-- Titolo -->
+        <div class="form-group">
+          <label for="title">Titolo <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title"
+            [(ngModel)]="newBook.title"
+            required
+            placeholder="Inserisci il titolo del libro"
+            [disabled]="isSubmitting"
+          >
+        </div>
+
+        <!-- Autore -->
+        <div class="form-group">
+          <label for="author">Autore <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="author" 
+            name="author"
+            [(ngModel)]="newBook.author"
+            required
+            placeholder="Inserisci il nome dell'autore"
+            [disabled]="isSubmitting"
+          >
+        </div>
+
+        <!-- Categoria e Anno -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Categoria</label>
+            <select 
+              id="category" 
+              name="category"
+              [(ngModel)]="newBook.category"
+              [disabled]="isSubmitting"
+            >
+              <option value="">Seleziona una categoria</option>
+              <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="year">Anno di pubblicazione</label>
+            <input 
+              type="number" 
+              id="year" 
+              name="year"
+              [(ngModel)]="newBook.year"
+              min="1000" 
+              max="2026"
+              placeholder="Es: 2024"
+              [disabled]="isSubmitting"
+            >
+          </div>
+        </div>
+
+        <!-- Descrizione -->
+        <div class="form-group">
+          <label for="description">Descrizione</label>
+          <textarea 
+            id="description" 
+            name="description"
+            [(ngModel)]="newBook.description"
+            placeholder="Inserisci una breve descrizione del libro..."
+            [disabled]="isSubmitting"
+          ></textarea>
+          <div class="helper-text">Una descrizione accattivante aiuta i lettori a scegliere il libro giusto</div>
+        </div>
+
+        <!-- URL Immagine -->
+        <div class="form-group">
+          <label for="image">URL Immagine copertina</label>
+          <input 
+            type="url" 
+            id="image" 
+            name="image"
+            [(ngModel)]="newBook.image"
+            (ngModelChange)="onImageUrlChange()"
+            placeholder="https://esempio.com/copertina.jpg"
+            [disabled]="isSubmitting"
+          >
+          <div class="helper-text">Incolla l'URL di un'immagine della copertina del libro</div>
+          
+          <!-- Anteprima immagine -->
+          <div class="image-preview" *ngIf="newBook.image">
+            <img 
+              *ngIf="!imageError"
+              [src]="newBook.image" 
+              alt="Anteprima copertina"
+              (error)="onImageError()"
+            >
+            <p *ngIf="imageError" class="error-text">⚠️ Impossibile caricare l'immagine</p>
+          </div>
+          <div class="image-preview" *ngIf="!newBook.image">
+            <p>L'anteprima dell'immagine apparirà qui</p>
+          </div>
+        </div>
+
+        <!-- Copie -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="totalCopies">Copie totali</label>
+            <input 
+              type="number" 
+              id="totalCopies" 
+              name="totalCopies"
+              [(ngModel)]="newBook.total_copies"
+              (ngModelChange)="onTotalCopiesChange()"
+              min="0"
+              [disabled]="isSubmitting"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="availableCopies">Copie disponibili</label>
+            <input 
+              type="number" 
+              id="availableCopies" 
+              name="availableCopies"
+              [(ngModel)]="newBook.available_copies"
+              min="0"
+              [max]="newBook.total_copies"
+              [disabled]="isSubmitting"
+            >
+          </div>
+        </div>
+
+        <!-- Pulsanti -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn btn-back" 
+            (click)="goBack()"
+            [disabled]="isSubmitting"
+          >
+            ← Indietro
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            (click)="resetForm()"
+            [disabled]="isSubmitting"
+          >
+            Reset
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="isSubmitting || !bookForm.form.valid"
+          >
+            {{ isSubmitting ? 'Salvataggio...' : 'Salva Libro' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
