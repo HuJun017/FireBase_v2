@@ -30,26 +30,26 @@ export class Home {
   /*------------------------*/
 
   ngOnInit(): void {
-  this.loadBooks();
-}
+    this.loadBooks();
+  }
 
-/*----- funzione per caricare i libri dal HomeService ----------*/
-loadBooks(): void {
-  this.homeService.getBook().subscribe({
-    next: (data) => {
-      console.log('Libri caricati correttamente');
-      this.book = data;
-      this.loading = false;
-      this.cdr.detectChanges();
-    },
-    error: (err) => {
-      console.error('Errore nel caricamento dei libri', err);
-      this.error = true;
-      this.loading = false;
-      this.cdr.detectChanges();
-    }
-  });
-}
+  /*----- funzione per caricare i libri dal HomeService ----------*/
+  loadBooks(): void {
+    this.homeService.getBook().subscribe({
+      next: (data) => {
+        console.log('Libri caricati correttamente');
+        this.book = data;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Errore nel caricamento dei libri', err);
+        this.error = true;
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   /*-------funzione di logout-------*/
   async onLogout() {
@@ -59,6 +59,11 @@ loadBooks(): void {
     } catch (error) {
       console.error('Errore durante il logout:', error);
     }
+  }
+
+  /*-------funzione per navigare alla pagina di aggiunta libro-------*/
+  addNewBook() {
+    this.router.navigate(['/new-book']);
   }
 
 }
