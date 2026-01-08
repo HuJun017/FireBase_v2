@@ -8,8 +8,8 @@ import { NewBookService } from '../../services/new-book-service';
   selector: 'app-new-book',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './new-book.component.html',
-  styleUrl: './new-book.component.css'
+  templateUrl: './new-book.html',
+  styleUrl: './new-book.css'
 })
 export class NewBookComponent {
   
