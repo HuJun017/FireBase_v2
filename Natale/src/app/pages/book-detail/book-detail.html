@@ -1,39 +1,18 @@
-<!-- book-detail.html - VERSIONE CON STILI INLINE -->
-<div style="
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f8f9fa;
-  min-height: 100vh;
-">
+<div class="book-detail-container">
 
   <!-- DEBUG - Solo se isDebugMode è true -->
-  <div *ngIf="isDebugMode" style="
-    background: #fff3cd;
-    border-left: 4px solid #ffc107;
-    padding: 15px;
-    margin-bottom: 25px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  ">
-    <h3 style="color: #856404; margin-top: 0; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
-      DEBUG PANEL:
-    </h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-      <div style="background: white; padding: 8px 12px; border-radius: 3px; border: 1px solid #ffeaa7;">
-        <span style="font-weight: 600; color: #856404; margin-right: 8px;">loading:</span>
-        <span [style.background-color]="loading ? '#d4edda' : '#f8d7da'" 
-              [style.color]="loading ? '#155724' : '#721c24'"
-              style="font-family: 'Courier New', monospace; padding: 2px 6px; border-radius: 3px; font-size: 14px;">
+  <div *ngIf="isDebugMode" class="debug-panel">
+    <h3 class="debug-title">DEBUG PANEL:</h3>
+    <div class="debug-grid">
+      <div class="debug-item">
+        <span class="debug-label">loading:</span>
+        <span [class]="loading ? 'debug-value loading-true' : 'debug-value loading-false'">
           {{loading}}
         </span>
       </div>
-      <div style="background: white; padding: 8px 12px; border-radius: 3px; border: 1px solid #ffeaa7;">
-        <span style="font-weight: 600; color: #856404; margin-right: 8px;">error:</span>
-        <span [style.background-color]="error ? '#f8d7da' : 'transparent'" 
-              [style.color]="error ? '#721c24' : 'inherit'"
-              style="font-family: 'Courier New', monospace; padding: 2px 6px; border-radius: 3px; font-size: 14px; font-weight: bold;">
+      <div class="debug-item">
+        <span class="debug-label">error:</span>
+        <span [class]="error ? 'debug-value error-true' : 'debug-value error-false'">
           {{error || 'null'}}
         </span>
       </div>
@@ -41,139 +20,129 @@
   </div>
 
   <!-- STATI DELL'APPLICAZIONE -->
-  <div style="background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden;">
+  <div class="content-wrapper">
 
     <!-- Caricamento -->
-    <div *ngIf="loading" style="text-align: center; padding: 60px 20px;">
-      <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 25px;"></div>
-      <h1 style="color: #2c3e50; margin-bottom: 10px;">Caricamento in corso...</h1>
-      <p style="color: #7f8c8d;">Stiamo recuperando i dati del libro</p>
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <h1>Caricamento in corso...</h1>
+      <p>Stiamo recuperando i dati del libro</p>
     </div>
 
     <!-- Errore -->
-    <div *ngIf="!loading && error" style="text-align: center; padding: 60px 20px; background-color: #fee;">
-      <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
-      <h1 style="color: #c0392b; margin-bottom: 15px;">Errore nel caricamento</h1>
-      <p style="color: #e74c3c; background: #fff5f5; padding: 15px; border-radius: 5px; margin: 20px auto; max-width: 600px; border-left: 4px solid #e74c3c;">
+    <div *ngIf="!loading && error" class="error-state">
+      <div class="error-icon">⚠️</div>
+      <h1>Errore nel caricamento</h1>
+      <p class="error-message">
         {{error}}
       </p>
-      <button (click)="reloadData()" style="background-color: #3498db; color: white; border: none; padding: 12px 30px; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.3s; margin-top: 20px;">
+      <button (click)="reloadData()" class="retry-button">
         Riprova
       </button>
     </div>
 
     <!-- Dati libro -->
-    <div *ngIf="!loading && !error" style="padding: 30px;">
+    <div *ngIf="!loading && !error" class="book-data">
       
       <!-- Header -->
-      <div style="border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; position: relative;">
-        <span [style.background-color]="book?.available_copies > 0 ? '#d4edda' : '#f8d7da'"
-              [style.color]="book?.available_copies > 0 ? '#155724' : '#721c24'"
-              style="display: inline-block; padding: 6px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">
+      <div class="book-header">
+        <span [class]="book?.available_copies > 0 ? 'availability-badge available' : 'availability-badge unavailable'">
           {{book?.available_copies > 0 ? 'Disponibile' : 'Esaurito'}}
         </span>
-        <h1 style="color: #2c3e50; font-size: 32px; margin: 0 0 10px 0; line-height: 1.2;">
+        <h1 class="book-title">
           {{book?.title || 'Titolo non disponibile'}}
         </h1>
       </div>
 
       <!-- Layout a due colonne -->
-      <div style="display: grid; grid-template-columns: 300px 1fr; gap: 40px; margin-bottom: 30px;">
+      <div class="two-column-layout">
         
         <!-- Colonna sinistra -->
-        <div style="display: flex; flex-direction: column; gap: 25px;">
+        <div class="left-column">
           <!-- Immagine -->
-          <div style="background: #f8f9fa; border-radius: 8px; overflow: hidden; border: 1px solid #eee;">
+          <div class="image-container">
             <img *ngIf="book?.image" 
                  [src]="book.image" 
                  [alt]="book.title"
                  (error)="handleImageError($event)"
-                 style="width: 100%; height: auto; display: block; transition: transform 0.3s;">
-            <div *ngIf="!book?.image" style="width: 100%; height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;">
+                 class="book-image">
+            <div *ngIf="!book?.image" class="image-placeholder">
               Immagine non disponibile
             </div>
           </div>
 
           <!-- Disponibilità -->
-          <div style="background: white; border: 1px solid #e3e3e3; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-            <h3 style="color: #2c3e50; margin-top: 0; margin-bottom: 20px; font-size: 18px;">Disponibilità</h3>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-              <div style="text-align: center; flex: 1;">
-                <span style="display: block; color: #7f8c8d; font-size: 14px; margin-bottom: 5px;">Copie disponibili:</span>
-                <span style="display: block; font-size: 24px; font-weight: bold; color: #2c3e50;">
+          <div class="availability-container">
+            <h3>Disponibilità</h3>
+            <div class="availability-stats">
+              <div class="stat-item">
+                <span class="stat-label">Copie disponibili:</span>
+                <span class="stat-value">
                   {{book?.available_copies ?? 0}}
                 </span>
               </div>
-              <div style="text-align: center; flex: 1;">
-                <span style="display: block; color: #7f8c8d; font-size: 14px; margin-bottom: 5px;">Copie totali:</span>
-                <span style="display: block; font-size: 24px; font-weight: bold; color: #2c3e50;">
+              <div class="stat-item">
+                <span class="stat-label">Copie totali:</span>
+                <span class="stat-value">
                   {{book?.total_copies ?? 0}}
                 </span>
               </div>
             </div>
-            <div style="height: 8px; background-color: #ecf0f1; border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
-              <div [style.width.%]="getAvailabilityPercentage()" style="height: 100%; background: linear-gradient(90deg, #3498db, #2ecc71); transition: width 0.5s ease;"></div>
+            <div class="availability-bar">
+              <div [style.width.%]="getAvailabilityPercentage()" class="availability-fill"></div>
             </div>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin: 0;">
+            <p class="availability-percentage">
               {{getAvailabilityPercentage()}}% disponibile
             </p>
           </div>
         </div>
 
         <!-- Colonna destra -->
-        <div style="display: flex; flex-direction: column; gap: 25px;">
+        <div class="right-column">
           <!-- Dettagli libro -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; background: #f8f9fa; padding: 25px; border-radius: 8px;">
-            <div style="display: flex; flex-direction: column;">
-              <span style="font-weight: 600; color: #7f8c8d; font-size: 14px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">
-                Autore:
-              </span>
-              <span style="color: #2c3e50; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #eee;">
+          <div class="book-details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Autore:</span>
+              <span class="detail-value">
                 {{book?.author || 'N/A'}}
               </span>
             </div>
-            <div style="display: flex; flex-direction: column;">
-              <span style="font-weight: 600; color: #7f8c8d; font-size: 14px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">
-                Categoria:
-              </span>
-              <span style="color: #2c3e50; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #eee;">
+            <div class="detail-item">
+              <span class="detail-label">Categoria:</span>
+              <span class="detail-value">
                 {{book?.category || 'N/A'}}
               </span>
             </div>
-            <div style="display: flex; flex-direction: column;">
-              <span style="font-weight: 600; color: #7f8c8d; font-size: 14px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">
-                Anno di pubblicazione:
-              </span>
-              <span style="color: #2c3e50; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #eee;">
+            <div class="detail-item">
+              <span class="detail-label">Anno di pubblicazione:</span>
+              <span class="detail-value">
                 {{book?.year || 'N/A'}}
               </span>
             </div>
-            <div style="display: flex; flex-direction: column;">
-              <span style="font-weight: 600; color: #7f8c8d; font-size: 14px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">
-                ISBN:
-              </span>
-              <span style="color: #2c3e50; font-size: 16px; padding: 8px 0; border-bottom: 1px solid #eee;">
+            <div class="detail-item">
+              <span class="detail-label">ISBN:</span>
+              <span class="detail-value">
                 {{book?.isbn || 'N/A'}}
               </span>
             </div>
           </div>
 
           <!-- Descrizione -->
-          <div *ngIf="book?.description">
-            <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 20px;">Descrizione</h3>
-            <div style="line-height: 1.8; color: #34495e; background: white; padding: 25px; border-radius: 8px; border-left: 4px solid #3498db; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <div *ngIf="book?.description" class="description-section">
+            <h3>Descrizione</h3>
+            <div class="description-content">
               {{book.description}}
             </div>
           </div>
 
           <!-- Messaggio se nessuna descrizione -->
-          <div *ngIf="!book?.description" style="background: #f8f9fa; padding: 25px; border-radius: 8px; text-align: center; color: #7f8c8d; border: 2px dashed #ddd;">
+          <div *ngIf="!book?.description" class="no-description">
             <p>Nessuna descrizione disponibile per questo libro</p>
           </div>
 
           <!-- Note -->
-          <div style="background: #fff8e1; padding: 15px 20px; border-radius: 6px; border-left: 4px solid #ffb300;">
-            <div style="color: #5d4037; font-size: 14px; line-height: 1.6;">
+          <div class="note-section">
+            <div class="note-content">
               <strong>Nota:</strong> Tutti i dati sono sempre visibili e aggiornati in tempo reale
             </div>
           </div>
@@ -181,42 +150,11 @@
       </div>
 
       <!-- Footer -->
-      <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; text-align: right;">
-        <div style="color: #95a5a6; font-size: 13px; font-style: italic;">
+      <div class="footer-section">
+        <div class="last-update">
           Ultimo aggiornamento: {{formatDate(currentTimestamp)}}
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<style>
-  /* Animazione spinner */
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  /* Responsive */
-  @media (max-width: 900px) {
-    div[style*="grid-template-columns: 300px 1fr"] {
-      grid-template-columns: 1fr !important;
-      gap: 30px !important;
-    }
-  }
-
-  @media (max-width: 768px) {
-    div[style*="padding: 30px"] {
-      padding: 20px !important;
-    }
-    
-    h1[style*="font-size: 32px"] {
-      font-size: 24px !important;
-    }
-    
-    div[style*="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))"] {
-      grid-template-columns: 1fr !important;
-      padding: 20px !important;
-    }
-  }
-</style>

@@ -1,4 +1,4 @@
-// book-detail.ts - VERSIONE COMPLETA AGGIORNATA
+// book-detail.ts - VERSIONE COMPLETA SENZA LOG
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './book-detail.html',
+  styleUrls: ['./book-detail.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookDetail implements OnInit {
@@ -26,22 +27,19 @@ export class BookDetail implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    console.log('🔥 BookDetail - ngOnInit START');
-    
     await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     const bookId = this.route.snapshot.paramMap.get('id');
-    console.log('🔥 Book ID:', bookId);
-    
+
     if (!bookId) {
       this.error = 'Nessun ID fornito';
       this.loading = false;
       this.cdr.markForCheck();
       return;
     }
-    
+
     await this.loadBook(bookId);
-    
+
     setInterval(() => {
       this.currentTimestamp = new Date();
       this.cdr.markForCheck();
@@ -49,22 +47,17 @@ export class BookDetail implements OnInit {
   }
 
   async loadBook(bookId: string): Promise<void> {
-    console.log('🔥 loadBook chiamato con:', bookId);
-    
     try {
       await new Promise(resolve => setTimeout(resolve, 50));
-      
+
       const docRef = doc(this.firestore, 'Library', bookId);
       const docSnap = await getDoc(docRef);
-      
-      console.log('🔥 Documento esiste?', docSnap.exists());
-      
+
       if (docSnap.exists()) {
         const data = docSnap.data();
-        console.log('🔥 Dati grezzi:', data);
-        
-        this.book = { 
-          id: docSnap.id, 
+
+        this.book = {
+          id: docSnap.id,
           title: data['title'],
           author: data['author'],
           category: data['category'],
@@ -74,33 +67,21 @@ export class BookDetail implements OnInit {
           available_copies: data['available_copies'],
           image: data['image']
         };
-        
-        console.log('🔥 Book object creato:', this.book);
       } else {
         this.error = 'Documento non trovato';
-        console.error('🔥 Documento NON trovato');
       }
     } catch (error: any) {
-      console.error('🔥 Errore catch:', error);
       this.error = error.message;
     } finally {
-      console.log('🔥 FINALLY - loading false');
       this.loading = false;
-      
+
       setTimeout(() => {
-        console.log('🔥 Forzo change detection');
         this.cdr.markForCheck();
-        console.log('🔥 Stato finale:', { 
-          loading: this.loading, 
-          error: this.error, 
-          hasBook: !!this.book,
-          bookTitle: this.book?.title 
-        });
       }, 0);
     }
   }
 
-  // ========== NUOVE FUNZIONI AGGIUNTE ==========
+  // ========== FUNZIONI ==========
 
   getAvailabilityPercentage(): number {
     if (!this.book || !this.book.total_copies || this.book.total_copies === 0) {
@@ -111,9 +92,8 @@ export class BookDetail implements OnInit {
 
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
-    console.warn('🖼️ Immagine non caricata:', imgElement.src);
     imgElement.style.display = 'none';
-    
+
     const parent = imgElement.parentElement;
     if (parent) {
       parent.innerHTML = `
@@ -125,14 +105,13 @@ export class BookDetail implements OnInit {
   }
 
   reloadData(): void {
-    console.log('🔄 Ricarico i dati del libro');
     const bookId = this.route.snapshot.paramMap.get('id');
     if (bookId) {
       this.loading = true;
       this.error = null;
       this.book = null;
       this.cdr.markForCheck();
-      
+
       setTimeout(() => {
         this.loadBook(bookId);
       }, 300);
@@ -176,13 +155,12 @@ export class BookDetail implements OnInit {
   toggleDebugMode(): void {
     this.isDebugMode = !this.isDebugMode;
     this.cdr.markForCheck();
-    console.log('👨‍💼 Debug mode:', this.isDebugMode);
   }
 
   hasCompleteData(): boolean {
     if (!this.book) return false;
     const requiredFields = ['title', 'author', 'total_copies', 'available_copies'];
-    return requiredFields.every(field => 
+    return requiredFields.every(field =>
       this.book[field] !== undefined && this.book[field] !== null
     );
   }
@@ -197,9 +175,8 @@ export class BookDetail implements OnInit {
 
   isValidImageUrl(): boolean {
     if (!this.book || !this.book.image) return false;
-    const url = this.book.image;
     try {
-      new URL(url);
+      new URL(this.book.image);
       return true;
     } catch {
       return false;
@@ -211,30 +188,28 @@ export class BookDetail implements OnInit {
       alert('Non ci sono copie disponibili!');
       return;
     }
-    
+
     this.book.available_copies--;
-    console.log('📚 Libro prestato! Copie rimanenti:', this.book.available_copies);
     this.cdr.markForCheck();
     alert('Libro prenotato con successo!');
   }
 
   returnBook(): void {
     if (!this.book) return;
-    
+
     if (this.book.available_copies >= this.book.total_copies) {
       alert('Tutte le copie sono già disponibili!');
       return;
     }
-    
+
     this.book.available_copies++;
-    console.log('📚 Libro restituito! Copie disponibili:', this.book.available_copies);
     this.cdr.markForCheck();
     alert('Libro restituito con successo!');
   }
 
   generateBookReport(): string {
     if (!this.book) return 'Nessun dato disponibile';
-    
+
     return `
       REPORT LIBRO:
       ------------
