@@ -16,6 +16,8 @@ import { ChangeDetectorRef } from '@angular/core';
 export class Home {
 
   book: any[] = [];
+  filteredBooks: any[] = [];
+  categories: string[] = [];
   loading = true;
   error = false;
 
@@ -38,6 +40,8 @@ export class Home {
     this.homeService.getBook().subscribe({
       next: (data) => {
         console.log('Libri caricati correttamente');
+        this.filteredBooks = data;
+        this.categories = [...new Set(data.map((b: any) => b.category))].filter(c => c);
         this.book = data;
         this.loading = false;
         this.cdr.detectChanges();
@@ -65,5 +69,17 @@ export class Home {
   addNewBook() {
     this.router.navigate(['/new-book']);
   }
+  selectedCategory: string = 'Tutti';
+
+// Questa funzione viene chiamata quando clicchi su una categoria
+filterByCategory(category: string) {
+  this.selectedCategory = category;
+  
+  if (category === 'Tutti') {
+    this.filteredBooks = this.book; // Mostra tutto
+  } else {
+    this.filteredBooks = this.book.filter(b => b.category === category);
+  }
+}
 
 }

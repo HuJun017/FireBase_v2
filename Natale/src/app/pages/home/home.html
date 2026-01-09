@@ -1,4 +1,4 @@
-<!-- Testata della pagina -->
+<!-- Testata (rimane uguale) -->
 <header class="navbar">
   <h1>📚 Biblioteca</h1>
   <div class="buttons">
@@ -7,32 +7,46 @@
   </div>
 </header>
 
-<main class="content">
-  <h2>Libri disponibili</h2>
+<!-- Nuovo contenitore che divide Sidebar e Contenuto -->
+<div class="main-layout">
+  
+  <!-- Barra Laterale -->
+  <aside class="sidebar">
+    <h3>Categorie</h3>
+    <ul>
+      <!-- Opzione per mostrare tutti i libri -->
+      <li (click)="filterByCategory('Tutti')" [class.active]="selectedCategory === 'Tutti'">
+        Tutte le categorie
+      </li>
+      <!-- Lista dinamica delle categorie -->
+      <li 
+        *ngFor="let cat of categories" 
+        (click)="filterByCategory(cat)"
+        [class.active]="selectedCategory === cat"
+      >
+        {{ cat }}
+      </li>
+    </ul>
+  </aside>
 
-  <!-- Griglia dei libri -->
-  <section class="grid-container">
-    
-    <!-- Singola scheda libro -->
-    <article class="card" *ngFor="let book of book">
-      
-      <img *ngIf="book.image" [src]="book.image" class="card-img">
-      
-      <div class="card-body">
-        <h3>{{ book.title }}</h3>
-        <p><strong>Autore:</strong> {{ book.author }}</p>
-        <p class="description">{{ book.description }}</p>
-        
-        <!-- Disponibilità -->
-        <p [ngClass]="book.available_copies > 0 ? 'text-green' : 'text-red'">
-          {{ book.available_copies > 0 ? 'Disponibile' : 'Esaurito' }}
-        </p>
+  <!-- Contenuto principale (la tua griglia) -->
+  <main class="content">
+    <h2>{{ selectedCategory }}</h2>
 
-        <button class="btn-view" [routerLink]="['/book', book.id]">
-          Visualizza Dettagli
-        </button>
-      </div>
+    <section class="grid-container">
+      <article class="card" *ngFor="let book of filteredBooks">
+        <img *ngIf="book.image" [src]="book.image" class="card-img">
+        <div class="card-body">
+          <h3>{{ book.title }}</h3>
+          <p><strong>Autore:</strong> {{ book.author }}</p>
+          <p class="description">{{ book.description }}</p>
+          <p [ngClass]="book.available_copies > 0 ? 'text-green' : 'text-red'">
+            {{ book.available_copies > 0 ? 'Disponibile' : 'Esaurito' }}
+          </p>
+          <button class="btn-view" [routerLink]="['/book', book.id]">Visualizza</button>
+        </div>
+      </article>
+    </section>
+  </main>
 
-    </article>
-  </section>
-</main>
+</div>
