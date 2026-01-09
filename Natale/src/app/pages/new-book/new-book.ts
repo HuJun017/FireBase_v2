@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NewBookService } from '../../services/new-book-service';
@@ -11,7 +11,7 @@ import { NewBookService } from '../../services/new-book-service';
   templateUrl: './new-book.html',
   styleUrl: './new-book.css'
 })
-export class NewBookComponent {
+export class NewBook {
   
   newBook = {
     title: '',
