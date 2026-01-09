@@ -1,52 +1,78 @@
-<!-- Testata (rimane uguale) -->
-<header class="navbar">
-  <h1>📚 Biblioteca</h1>
-  <div class="buttons">
-    <button class="btn-add" (click)="addNewBook()">+ Aggiungi</button>
-    <button class="btn-logout" (click)="onLogout()">Esci</button>
+<!-- Navbar con Gradiente -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow border-0">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fs-3 fw-bold" href="#">📚 <span class="brand-text">Biblioteca Viva</span></a>
+    <div class="ms-auto">
+      <button class="btn btn-light fw-bold text-primary me-2 shadow-sm" (click)="addNewBook()">+ Aggiungi</button>
+      <button class="btn btn-danger btn-logout shadow-sm" (click)="onLogout()">Esci</button>
+    </div>
   </div>
-</header>
+</nav>
 
-<!-- Nuovo contenitore che divide Sidebar e Contenuto -->
-<div class="main-layout">
-  
-  <!-- Barra Laterale -->
-  <aside class="sidebar">
-    <h3>Categorie</h3>
-    <ul>
-      <!-- Opzione per mostrare tutti i libri -->
-      <li (click)="filterByCategory('Tutti')" [class.active]="selectedCategory === 'Tutti'">
-        Tutte le categorie
-      </li>
-      <!-- Lista dinamica delle categorie -->
-      <li 
-        *ngFor="let cat of categories" 
-        (click)="filterByCategory(cat)"
-        [class.active]="selectedCategory === cat"
-      >
-        {{ cat }}
-      </li>
-    </ul>
-  </aside>
-
-  <!-- Contenuto principale (la tua griglia) -->
-  <main class="content">
-    <h2>{{ selectedCategory }}</h2>
-
-    <section class="grid-container">
-      <article class="card" *ngFor="let book of filteredBooks">
-        <img *ngIf="book.image" [src]="book.image" class="card-img">
-        <div class="card-body">
-          <h3>{{ book.title }}</h3>
-          <p><strong>Autore:</strong> {{ book.author }}</p>
-          <p class="description">{{ book.description }}</p>
-          <p [ngClass]="book.available_copies > 0 ? 'text-green' : 'text-red'">
-            {{ book.available_copies > 0 ? 'Disponibile' : 'Esaurito' }}
-          </p>
-          <button class="btn-view" [routerLink]="['/book', book.id]">Visualizza</button>
+<div class="container-fluid mt-4 px-md-5">
+  <div class="row">
+    
+    <!-- Sidebar Colorata -->
+    <aside class="col-md-3 mb-4">
+      <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="card-header bg-indigo text-white py-3">
+          <h5 class="mb-0 fw-bold">Categorie</h5>
         </div>
-      </article>
-    </section>
-  </main>
+        <div class="list-group list-group-flush custom-sidebar">
+          <button 
+            (click)="filterByCategory('Tutti')" 
+            class="list-group-item list-group-item-action border-0 py-3"
+            [class.active]="selectedCategory === 'Tutti'">
+            🌟 Tutte le categorie
+          </button>
+          <button 
+            *ngFor="let cat of categories" 
+            (click)="filterByCategory(cat)"
+            class="list-group-item list-group-item-action border-0 py-3"
+            [class.active]="selectedCategory === cat">
+            🔖 {{ cat }}
+          </button>
+        </div>
+      </div>
+    </aside>
 
+    <!-- Contenuto Libri -->
+    <main class="col-md-9">
+      <div class="d-flex align-items-center mb-4">
+        <div class="category-indicator me-3"></div>
+        <h2 class="mt-0 mb-0 fw-bold text-dark text-capitalize">{{ selectedCategory }}</h2>
+      </div>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col" *ngFor="let book of filteredBooks">
+          
+          <div class="card h-100 border-0 shadow-sm book-card-hover">
+            <!-- Overlay per la categoria sull'immagine -->
+            <div class="position-relative">
+              <img *ngIf="book.image" [src]="book.image" class="card-img-top" style="height: 220px; object-fit: cover;">
+              <span class="badge bg-blur position-absolute top-0 end-0 m-2">{{book.category}}</span>
+            </div>
+
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold text-indigo">{{ book.title }}</h5>
+              <p class="card-text text-muted mb-3">di <span class="fw-semibold text-dark">{{ book.author }}</span></p>
+              
+              <!-- Badge Disponibilità migliorato -->
+              <div class="mb-3">
+                <span [class]="book.available_copies > 0 ? 'badge-status-available' : 'badge-status-soldout'">
+                  {{ book.available_copies > 0 ? 'Disponibile: ' + book.available_copies : 'Esaurito' }}
+                </span>
+              </div>
+              
+              <button class="btn btn-indigo w-100 mt-auto fw-bold" [routerLink]="['/book', book.id]">
+                Visualizza Dettagli
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+  </div>
 </div>
