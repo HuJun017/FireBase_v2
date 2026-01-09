@@ -1,41 +1,143 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/home">
+      <i class="bi bi-house-door-fill me-2"></i>
+      <span class="brand-text fw-bold">Biblioteca Digitale</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Contenuto principale -->
 <div class="login-container">
-  <div class="login-card">
-    <h1>Accedi</h1>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-6 col-lg-7 col-md-8">
+        <div class="login-card card">
+          <!-- Header della card -->
+          <div class="card-header text-center py-4">
+            <i class="bi bi-shield-lock-fill card-header-icon text-white display-4 mb-3"></i>
+            <h2 class="card-title text-white mb-0 fw-bold">Accedi al tuo Account</h2>
+            <p class="text-white-50 mb-0 mt-2">Bentornato! Inserisci le tue credenziali</p>
+          </div>
 
-    <form (ngSubmit)="onLogin()">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          [(ngModel)]="email"
-          name="email"
-          required
-        />
+          <!-- Corpo della card -->
+          <div class="card-body p-4 p-md-5">
+            <!-- Alert per errori -->
+            @if (error()) {
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Errore!</strong> {{ error() }}
+                <button type="button" class="btn-close" (click)="clearError()"></button>
+              </div>
+            }
+
+            <!-- Alert per successo -->
+            @if (successMessage()) {
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ successMessage() }}
+                <button type="button" class="btn-close" (click)="clearSuccess()"></button>
+              </div>
+            }
+
+            <!-- Form di login -->
+            <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+              <!-- Campo Email -->
+              <div class="form-group mb-4">
+                <label for="email" class="form-label fw-semibold">
+                  <i class="bi bi-envelope-fill me-2 text-primary"></i>Email
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-person-circle"></i>
+                  </span>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    [(ngModel)]="email"
+                    name="email"
+                    required
+                    email
+                    #emailInput="ngModel"
+                    placeholder="Inserisci la tua email"
+                    [class.is-invalid]="emailInput.invalid && emailInput.touched"
+                    [class.is-valid]="emailInput.valid && emailInput.touched"
+                  />
+                  <div class="invalid-feedback">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    Inserisci un indirizzo email valido.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Campo Password -->
+              <div class="form-group mb-4">
+                <label for="password" class="form-label fw-semibold">
+                  <i class="bi bi-key-fill me-2 text-primary"></i>Password
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-lock-fill"></i>
+                  </span>
+                  <input
+                    type="password"
+                    id="password"
+                    class="form-control"
+                    [(ngModel)]="password"
+                    name="password"
+                    required
+                    minlength="6"
+                    #passwordInput="ngModel"
+                    placeholder="Inserisci la password"
+                    [class.is-invalid]="passwordInput.invalid && passwordInput.touched"
+                    [class.is-valid]="passwordInput.valid && passwordInput.touched"
+                  />
+                  <div class="invalid-feedback">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    La password deve essere di almeno 6 caratteri.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pulsante di accesso -->
+              <div class="d-grid mb-4">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg"
+                  [disabled]="isLoading() || loginForm.invalid"
+                >
+                  @if (isLoading()) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Accesso in corso...
+                  } @else {
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Accedi
+                  }
+                </button>
+              </div>
+            </form>
+
+            <!-- Link alla registrazione -->
+            <div class="text-center">
+              <p class="mb-2 text-muted">Non hai ancora un account?</p>
+              <a routerLink="/register" class="btn btn-outline-primary">
+                <i class="bi bi-person-plus-fill me-2"></i>
+                Registrati ora
+              </a>
+            </div>
+          </div>
+
+          <!-- Footer della card -->
+          <div class="card-footer text-center py-3 bg-light">
+            <small class="text-muted">
+              <i class="bi bi-shield-check me-1"></i>
+              Accesso sicuro e protetto
+            </small>
+          </div>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          [(ngModel)]="password"
-          name="password"
-          required
-          placeholder="Inserisci la password"
-        />
-      </div>
-
-      <button type="submit">Accedi</button>
-    </form>
-
-    <p class="register-link">
-      Non hai un account?
-      <a routerLink="/register">Registrati</a>
-    </p>
-
-    @if (error()) {
-      <p class="error">{{ error() }}</p>
-    }
+    </div>
   </div>
 </div>

@@ -1,78 +1,202 @@
-<!-- Navbar con Gradiente -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow border-0">
-  <div class="container-fluid px-4">
-    <a class="navbar-brand fs-3 fw-bold" href="#">📚 <span class="brand-text">Biblioteca Viva</span></a>
-    <div class="ms-auto">
-      <button class="btn btn-light fw-bold text-primary me-2 shadow-sm" (click)="addNewBook()">+ Aggiungi</button>
-      <button class="btn btn-danger btn-logout shadow-sm" (click)="onLogout()">Esci</button>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/mesg">
+      <i class="bi bi-house-door-fill me-2"></i>
+      <span class="brand-text fw-bold">Biblioteca Digitale</span>
+    </a>
+
+    <div class="d-flex">
+      <button class="btn btn-outline-light me-2" routerLink="/profile">
+        <i class="bi bi-person-circle me-1"></i>
+        <span class="d-none d-sm-inline">Profilo</span>
+      </button>
+      <button class="btn btn-success me-2" (click)="addNewBook()">
+        <i class="bi bi-plus-circle-fill me-1"></i>
+        <span class="d-none d-sm-inline">Aggiungi</span>
+      </button>
+      <button class="btn btn-outline-danger" (click)="onLogout()">
+        <i class="bi bi-box-arrow-right me-1"></i>
+        <span class="d-none d-sm-inline">Esci</span>
+      </button>
     </div>
   </div>
 </nav>
 
-<div class="container-fluid mt-4 px-md-5">
-  <div class="row">
-    
-    <!-- Sidebar Colorata -->
-    <aside class="col-md-3 mb-4">
-      <div class="card border-0 shadow-sm overflow-hidden">
-        <div class="card-header bg-indigo text-white py-3">
-          <h5 class="mb-0 fw-bold">Categorie</h5>
-        </div>
-        <div class="list-group list-group-flush custom-sidebar">
-          <button 
-            (click)="filterByCategory('Tutti')" 
-            class="list-group-item list-group-item-action border-0 py-3"
-            [class.active]="selectedCategory === 'Tutti'">
-            🌟 Tutte le categorie
-          </button>
-          <button 
-            *ngFor="let cat of categories" 
-            (click)="filterByCategory(cat)"
-            class="list-group-item list-group-item-action border-0 py-3"
-            [class.active]="selectedCategory === cat">
-            🔖 {{ cat }}
-          </button>
-        </div>
-      </div>
-    </aside>
+<!-- Contenuto principale -->
+<div class="home-container">
+  <div class="container-fluid">
+    <div class="row">
 
-    <!-- Contenuto Libri -->
-    <main class="col-md-9">
-      <div class="d-flex align-items-center mb-4">
-        <div class="category-indicator me-3"></div>
-        <h2 class="mt-0 mb-0 fw-bold text-dark text-capitalize">{{ selectedCategory }}</h2>
-      </div>
-
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <div class="col" *ngFor="let book of filteredBooks">
-          
-          <div class="card h-100 border-0 shadow-sm book-card-hover">
-            <!-- Overlay per la categoria sull'immagine -->
-            <div class="position-relative">
-              <img *ngIf="book.image" [src]="book.image" class="card-img-top" style="height: 220px; object-fit: cover;">
-              <span class="badge bg-blur position-absolute top-0 end-0 m-2">{{book.category}}</span>
-            </div>
-
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title fw-bold text-indigo">{{ book.title }}</h5>
-              <p class="card-text text-muted mb-3">di <span class="fw-semibold text-dark">{{ book.author }}</span></p>
-              
-              <!-- Badge Disponibilità migliorato -->
-              <div class="mb-3">
-                <span [class]="book.available_copies > 0 ? 'badge-status-available' : 'badge-status-soldout'">
-                  {{ book.available_copies > 0 ? 'Disponibile: ' + book.available_copies : 'Esaurito' }}
-                </span>
-              </div>
-              
-              <button class="btn btn-indigo w-100 mt-auto fw-bold" [routerLink]="['/book', book.id]">
-                Visualizza Dettagli
+      <!-- Sidebar Categorie -->
+      <aside class="col-lg-3 col-xl-2 mb-4">
+        <div class="categories-card card">
+          <div class="card-header bg-gradient-primary text-white">
+            <h5 class="mb-0 fw-bold d-flex align-items-center">
+              <i class="bi bi-grid-3x3-gap-fill me-2"></i>
+              Categorie
+            </h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="categories-list">
+              <button
+                (click)="filterByCategory('Tutti')"
+                class="category-item d-flex align-items-center w-100 border-0 py-3 px-3"
+                [class.active]="selectedCategory === 'Tutti'">
+                <i class="bi bi-stars me-3 fs-5"></i>
+                <span class="fw-semibold">Tutte le categorie</span>
+                <small class="badge bg-light text-dark ms-auto">{{ book.length }}</small>
+              </button>
+              <button
+                *ngFor="let cat of categories"
+                (click)="filterByCategory(cat)"
+                class="category-item d-flex align-items-center w-100 border-0 py-3 px-3"
+                [class.active]="selectedCategory === cat">
+                <i class="bi bi-tag-fill me-3 text-primary"></i>
+                <span class="fw-semibold">{{ cat }}</span>
+                <small class="badge bg-primary ms-auto">{{ getBooksCountByCategory(cat) }}</small>
               </button>
             </div>
           </div>
-
         </div>
-      </div>
-    </main>
 
+        <!-- Card Statistiche -->
+        <div class="stats-card card mt-4">
+          <div class="card-body text-center">
+            <div class="stats-icon mb-3">
+              <i class="bi bi-bar-chart-line-fill text-success"></i>
+            </div>
+            <h6 class="card-title fw-bold text-dark">La tua Biblioteca</h6>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-number text-primary fw-bold">{{ book.length }}</div>
+                <div class="stat-label text-muted small">Libri Totali</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number text-success fw-bold">{{ categories.length }}</div>
+                <div class="stat-label text-muted small">Categorie</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number text-warning fw-bold">{{ getAvailableBooksCount() }}</div>
+                <div class="stat-label text-muted small">Disponibili</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Contenuto Libri -->
+      <main class="col-lg-9 col-xl-10">
+        <!-- Header con categoria selezionata -->
+        <div class="books-header mb-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="category-indicator me-3"></div>
+            <h1 class="h2 mb-0 fw-bold text-dark text-capitalize">{{ selectedCategory }}</h1>
+            <span class="badge bg-primary ms-3 fs-6">{{ filteredBooks.length }} libri</span>
+          </div>
+          <p class="text-muted mb-0">
+            @if (selectedCategory === 'Tutti') {
+              Esplora tutta la tua collezione di libri
+            } @else {
+              Libri nella categoria "{{ selectedCategory }}"
+            }
+          </p>
+        </div>
+
+        <!-- Stato di caricamento -->
+        @if (loading) {
+          <div class="loading-state text-center py-5">
+            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+              <span class="visually-hidden">Caricamento...</span>
+            </div>
+            <h5 class="text-muted">Caricamento libri...</h5>
+          </div>
+        }
+
+        <!-- Stato di errore -->
+        @if (error && !loading) {
+          <div class="error-state text-center py-5">
+            <i class="bi bi-exclamation-triangle-fill text-danger display-1 mb-3"></i>
+            <h5 class="text-danger mb-3">Errore nel caricamento</h5>
+            <p class="text-muted">Si è verificato un problema nel caricamento dei libri.</p>
+            <button class="btn btn-primary" (click)="loadBooks()">
+              <i class="bi bi-arrow-clockwise me-2"></i>Riprova
+            </button>
+          </div>
+        }
+
+        <!-- Griglia libri -->
+        @if (!loading && !error) {
+          @if (filteredBooks.length === 0) {
+            <div class="empty-state text-center py-5">
+              <i class="bi bi-book-x text-muted display-1 mb-3"></i>
+              <h5 class="text-muted mb-3">Nessun libro trovato</h5>
+              <p class="text-muted">Non ci sono libri in questa categoria.</p>
+              <button class="btn btn-primary" (click)="filterByCategory('Tutti')">
+                <i class="bi bi-grid me-2"></i>Vedi tutti i libri
+              </button>
+            </div>
+          } @else {
+            <div class="books-grid">
+              <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+                <div class="col" *ngFor="let book of filteredBooks; trackBy: trackByBookId">
+                  <div class="book-card card h-100 border-0 shadow-sm">
+                    <!-- Immagine del libro -->
+                    <div class="position-relative book-image-container">
+                      @if (book.image) {
+                        <img [src]="book.image" class="card-img-top book-image" [alt]="book.title">
+                      } @else {
+                        <div class="book-placeholder d-flex align-items-center justify-content-center">
+                          <i class="bi bi-book-fill text-muted" style="font-size: 3rem;"></i>
+                        </div>
+                      }
+                      <span class="badge category-badge position-absolute top-0 end-0 m-2">
+                        {{ book.category }}
+                      </span>
+                      @if (book.available_copies === 0) {
+                        <div class="sold-out-overlay">
+                          <span class="sold-out-text">ESAURITO</span>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Corpo della card -->
+                    <div class="card-body d-flex flex-column">
+                      <h5 class="card-title fw-bold text-dark mb-2">{{ book.title }}</h5>
+                      <p class="card-text text-muted mb-3 small">
+                        <i class="bi bi-person-fill me-1"></i>
+                        {{ book.author }}
+                      </p>
+
+                      <!-- Badge disponibilità -->
+                      <div class="availability-badge mb-3">
+                        @if (book.available_copies > 0) {
+                          <span class="badge badge-available">
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            Disponibile ({{ book.available_copies }})
+                          </span>
+                        } @else {
+                          <span class="badge badge-unavailable">
+                            <i class="bi bi-x-circle-fill me-1"></i>
+                            Esaurito
+                          </span>
+                        }
+                      </div>
+
+                      <!-- Pulsante dettagli -->
+                      <button class="btn btn-primary w-100 mt-auto fw-bold" [routerLink]="['/book', book.id]">
+                        <i class="bi bi-eye-fill me-2"></i>
+                        Visualizza Dettagli
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      </main>
+
+    </div>
   </div>
 </div>

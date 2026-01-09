@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collectionData, collection, addDoc, doc, deleteDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, collectionData, collection, addDoc, doc, deleteDoc, query, where, getDocs } from '@angular/fire/firestore';
+import { Observable, from } from 'rxjs';
 import { AuthService } from './auth-service';
 
 @Injectable({
@@ -35,5 +35,21 @@ export class HomeService {
   eliminaLibro(id: string) {
     const docRef = doc(this.firestore, `books/${id}`);
     return deleteDoc(docRef);
+  }
+
+  // Ottieni i prestiti dell'utente
+  getUserLoans(userId: string): Observable<any[]> {
+    return new Observable(observer => {
+      const loansCollection = collection(this.firestore, 'Prenotazioni');
+      const q = query(loansCollection, where('userId', '==', userId));
+
+      getDocs(q).then(snapshot => {
+        const loans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        observer.next(loans);
+        observer.complete();
+      }).catch(error => {
+        observer.error(error);
+      });
+    });
   }
 }

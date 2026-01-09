@@ -1,15 +1,83 @@
-<div class="home-container">
-  <div class="home-card">
-    <h1>Benvenuto nella Libreria 📚</h1>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/home">
+      <i class="bi bi-house-door-fill me-2"></i>
+      <span class="brand-text fw-bold">Biblioteca Digitale</span>
+    </a>
+    <div class="d-flex">
+      <button class="btn btn-outline-danger" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-1"></i>
+        Logout
+      </button>
+    </div>
+  </div>
+</nav>
 
-    <p class="subtitle">
-      Gestisci i tuoi libri in modo semplice e sicuro.
-    </p>
+<!-- Contenuto principale -->
+<div class="welcome-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-8 col-lg-10">
+        <div class="welcome-card card">
+          <!-- Header della card -->
+          <div class="card-header text-center py-5">
+            <div class="welcome-icon-wrapper mb-4">
+              <i class="bi bi-book-fill welcome-icon text-white display-1"></i>
+            </div>
+            <h1 class="card-title text-white mb-3 fw-bold display-4">Benvenuto nella tua Biblioteca! 📚</h1>
+            <p class="text-white-50 mb-0 fs-5">Gestisci i tuoi libri preferiti in modo semplice e sicuro</p>
+          </div>
 
-    <div class="actions">
-      <a routerLink="/home" class="btn primary">
-        Vai alla Libreria
-      </a>
+          <!-- Corpo della card -->
+          <div class="card-body p-5">
+            <!-- Sezione features -->
+            <div class="features-section mb-5">
+              <div class="row g-4">
+                <div class="col-md-4 text-center">
+                  <div class="feature-item">
+                    <i class="bi bi-plus-circle-fill feature-icon text-primary mb-3"></i>
+                    <h5 class="fw-bold">Aggiungi Libri</h5>
+                    <p class="text-muted">Carica nuovi libri nella tua collezione personale</p>
+                  </div>
+                </div>
+                <div class="col-md-4 text-center">
+                  <div class="feature-item">
+                    <i class="bi bi-search feature-icon text-success mb-3"></i>
+                    <h5 class="fw-bold">Cerca e Sfoglia</h5>
+                    <p class="text-muted">Trova facilmente i libri che stai cercando</p>
+                  </div>
+                </div>
+                <div class="col-md-4 text-center">
+                  <div class="feature-item">
+                    <i class="bi bi-heart-fill feature-icon text-danger mb-3"></i>
+                    <h5 class="fw-bold">Gestisci Prestiti</h5>
+                    <p class="text-muted">Tieni traccia dei tuoi libri in prestito</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pulsante principale -->
+            <div class="text-center">
+              <a routerLink="/home" class="btn btn-primary btn-lg btn-main mb-4">
+                <i class="bi bi-arrow-right-circle-fill me-2"></i>
+                Vai alla tua Biblioteca
+                <i class="bi bi-arrow-right-circle-fill ms-2"></i>
+              </a>
+              <p class="text-muted mb-0">Scopri la tua collezione di libri</p>
+            </div>
+          </div>
+
+          <!-- Footer della card -->
+          <div class="card-footer text-center py-3 bg-light">
+            <small class="text-muted">
+              <i class="bi bi-shield-check me-1"></i>
+              Accesso sicuro • Dati protetti • Esperienza personalizzata
+            </small>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

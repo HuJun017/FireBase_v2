@@ -37,6 +37,8 @@ export class Home {
 
   /*----- funzione per caricare i libri dal HomeService ----------*/
   loadBooks(): void {
+    this.loading = true;
+    this.error = false;
     this.homeService.getBook().subscribe({
       next: (data) => {
         console.log('Libri caricati correttamente');
@@ -69,17 +71,33 @@ export class Home {
   addNewBook() {
     this.router.navigate(['/new-book']);
   }
+
   selectedCategory: string = 'Tutti';
 
-// Questa funzione viene chiamata quando clicchi su una categoria
-filterByCategory(category: string) {
-  this.selectedCategory = category;
-  
-  if (category === 'Tutti') {
-    this.filteredBooks = this.book; // Mostra tutto
-  } else {
-    this.filteredBooks = this.book.filter(b => b.category === category);
+  // Questa funzione viene chiamata quando clicchi su una categoria
+  filterByCategory(category: string) {
+    this.selectedCategory = category;
+
+    if (category === 'Tutti') {
+      this.filteredBooks = this.book; // Mostra tutto
+    } else {
+      this.filteredBooks = this.book.filter(b => b.category === category);
+    }
   }
-}
+
+  // Funzione per ottenere il conteggio dei libri per categoria
+  getBooksCountByCategory(category: string): number {
+    return this.book.filter(b => b.category === category).length;
+  }
+
+  // Funzione per ottenere il conteggio totale dei libri disponibili
+  getAvailableBooksCount(): number {
+    return this.book.reduce((total, book) => total + (book.available_copies || 0), 0);
+  }
+
+  // Funzione per ottimizzare il rendering della lista (trackBy)
+  trackByBookId(index: number, book: any): any {
+    return book.id;
+  }
 
 }

@@ -1,33 +1,136 @@
-<h1>Registrazione</h1>
+<div class="register-container">
+  <!-- Navbar con gradiente come nelle altre pagine -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow border-0">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand fs-3 fw-bold" href="#" routerLink="/login">
+        <i class="bi bi-arrow-left me-2"></i>
+        📚 <span class="brand-text">Biblioteca Viva</span>
+      </a>
+    </div>
+  </nav>
 
-<form (ngSubmit)="onRegister()">
-  <div>
-    <label for="email">Email</label>
-    <input
-      type="email"
-      id="email"
-      [(ngModel)]="email"
-      name="email"
-      required
-    />
+  <div class="register-content">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+          <!-- Card di registrazione -->
+          <div class="register-card card shadow-lg border-0">
+            <div class="card-header bg-gradient-custom text-white text-center py-4">
+              <div class="card-header-icon mb-3">
+                <i class="bi bi-person-plus-fill fs-1"></i>
+              </div>
+              <h2 class="mb-2 fw-bold">Crea il tuo Account</h2>
+              <p class="mb-0 opacity-75">Unisciti alla nostra biblioteca digitale</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+              <!-- Messaggio di errore -->
+              <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Errore:</strong> {{ error }}
+                <button type="button" class="btn-close" (click)="clearError()"></button>
+              </div>
+
+              <!-- Messaggio di successo -->
+              <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ successMessage }}
+                <button type="button" class="btn-close" (click)="clearSuccess()"></button>
+              </div>
+
+              <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+                <!-- Campo Email -->
+                <div class="form-group mb-4">
+                  <label for="email" class="form-label fw-semibold">
+                    <i class="bi bi-envelope me-2"></i>Email
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="bi bi-envelope-fill"></i>
+                    </span>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      [(ngModel)]="email"
+                      class="form-control form-control-lg"
+                      placeholder="Inserisci la tua email"
+                      required
+                      email
+                      #emailInput="ngModel"
+                    />
+                  </div>
+                  <div *ngIf="emailInput.invalid && emailInput.touched" class="invalid-feedback d-block">
+                    Inserisci un indirizzo email valido
+                  </div>
+                </div>
+
+                <!-- Campo Password -->
+                <div class="form-group mb-4">
+                  <label for="password" class="form-label fw-semibold">
+                    <i class="bi bi-lock me-2"></i>Password
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="bi bi-lock-fill"></i>
+                    </span>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      [(ngModel)]="password"
+                      class="form-control form-control-lg"
+                      placeholder="Crea una password sicura"
+                      required
+                      minlength="6"
+                      #passwordInput="ngModel"
+                    />
+                  </div>
+                  <div *ngIf="passwordInput.invalid && passwordInput.touched" class="invalid-feedback d-block">
+                    La password deve essere di almeno 6 caratteri
+                  </div>
+                  <div class="form-text">
+                    <small class="text-muted">
+                      <i class="bi bi-info-circle me-1"></i>
+                      Usa almeno 6 caratteri per una password sicura
+                    </small>
+                  </div>
+                </div>
+
+                <!-- Pulsante di registrazione -->
+                <div class="d-grid mb-4">
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-lg fw-bold"
+                    [disabled]="registerForm.invalid || isLoading"
+                  >
+                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <i *ngIf="!isLoading" class="bi bi-person-plus me-2"></i>
+                    {{ isLoading ? 'Registrazione in corso...' : 'Crea Account' }}
+                  </button>
+                </div>
+
+                <!-- Link al login -->
+                <div class="text-center">
+                  <p class="mb-2 text-muted">Hai già un account?</p>
+                  <a routerLink="/login" class="btn btn-outline-primary fw-semibold">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Accedi
+                  </a>
+                </div>
+              </form>
+            </div>
+
+            <!-- Footer della card -->
+            <div class="card-footer text-center py-3 bg-light">
+              <small class="text-muted">
+                <i class="bi bi-shield-check me-1"></i>
+                I tuoi dati sono al sicuro con noi
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div>
-    <label for="password">Password</label>
-    <input
-      type="password"
-      id="password"
-      [(ngModel)]="password"
-      name="password"
-      required
-    />
-  </div>
-
-  <button type="submit">Registrati</button>
-</form>
-
-<p>Hai già un account? <a routerLink="/login">Vai al login</a></p>
-
-@if (error) {
-  <p style="color: red;">{{ error }}</p>
-}
+</div>

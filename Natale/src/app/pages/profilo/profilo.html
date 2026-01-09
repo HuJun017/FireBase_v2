@@ -1,71 +1,106 @@
-<section>
-
-  <!-- Intestazione profilo -->
-  <header>
-    <h1>Profilo utente</h1>
-
-    <div>
-      <span>Avatar</span>
-      <h2></h2>
-      <p></p>
+<div class="profile-container">
+  <!-- Header con gradiente come la home -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow border-0">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand fs-3 fw-bold" href="#">📚 <span class="brand-text">Biblioteca Viva</span></a>
+      <div class="ms-auto">
+        <button class="btn btn-light fw-bold text-primary me-2 shadow-sm" routerLink="/home">← Home</button>
+      </div>
     </div>
-  </header>
+  </nav>
 
-  <!-- Informazioni account -->
-  <section>
-    <h3>Informazioni account</h3>
+  <div class="container-fluid mt-4 px-md-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <!-- Card profilo principale -->
+        <div class="card shadow-lg border-0 profile-card">
+          <div class="card-header bg-gradient-custom text-white py-4">
+            <div class="d-flex align-items-center">
+              <div class="profile-avatar me-3">
+                <span class="avatar-icon">👤</span>
+              </div>
+              <div>
+                <h2 class="mb-1 fw-bold">Profilo Utente</h2>
+                <p class="mb-0 opacity-75">Gestisci i tuoi prestiti e informazioni personali</p>
+              </div>
+            </div>
+          </div>
 
-    <ul>
-      <li>
-        <strong>Data di registrazione:</strong>
-        <span></span>
-      </li>
+          <div class="card-body p-4 p-md-5">
+            <!-- Informazioni utente -->
+            <div class="user-info-section mb-5">
+              <h4 class="section-title mb-3">
+                <i class="bi bi-person-circle me-2"></i>Informazioni Account
+              </h4>
+              <div class="info-card">
+                <div class="info-item">
+                  <label class="info-label">Email</label>
+                  <p class="info-value">{{ userEmail }}</p>
+                </div>
+                <div class="info-item">
+                  <label class="info-label">Stato Account</label>
+                  <span class="badge badge-active">Attivo</span>
+                </div>
+              </div>
+            </div>
 
-      <li>
-        <strong>Ruolo:</strong>
-        <span></span>
-      </li>
+            <!-- Libri noleggiati -->
+            <div class="loans-section">
+              <h4 class="section-title mb-3">
+                <i class="bi bi-book me-2"></i>Libri Noleggiati
+              </h4>
 
-      <li>
-        <strong>Stato account:</strong>
-        <span>Attivo</span>
-      </li>
-    </ul>
-  </section>
+              <!-- Caricamento -->
+              <div *ngIf="loading" class="text-center py-5">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                  <span class="visually-hidden">Caricamento...</span>
+                </div>
+                <h5 class="text-muted">Caricamento prestiti...</h5>
+              </div>
 
-  <!-- Attività nella biblioteca -->
-  <section>
-    <h3>Attività nella biblioteca</h3>
+              <!-- Nessun prestito -->
+              <div *ngIf="!loading && userLoans.length === 0" class="no-loans-card">
+                <div class="text-center py-5">
+                  <div class="no-loans-icon mb-3">📚</div>
+                  <h5 class="text-muted">Nessun libro noleggiato al momento</h5>
+                  <p class="text-muted small">I tuoi prestiti appariranno qui quando prenoterai un libro</p>
+                  <button class="btn btn-primary mt-3" routerLink="/home">
+                    <i class="bi bi-search me-2"></i>Esplora Libri
+                  </button>
+                </div>
+              </div>
 
-    <ul>
-      <li>
-        <strong>Libri attualmente in prestito:</strong>
-        <span></span>
-      </li>
-
-      <li>
-        <strong>Libri letti:</strong>
-        <span></span>
-      </li>
-
-      <li>
-        <strong>Libri nei preferiti:</strong>
-        <span></span>
-      </li>
-    </ul>
-  </section>
-
-  <!-- Azioni -->
-  <section>
-    <h3>Azioni</h3>
-
-    <button>
-      Modifica profilo
-    </button>
-
-    <button>
-      Logout
-    </button>
-  </section>
-
-</section>
+              <!-- Tabella prestiti -->
+              <div *ngIf="!loading && userLoans.length > 0" class="loans-table-container">
+                <div class="table-responsive">
+                  <table class="table table-hover loans-table">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col"><i class="bi bi-book me-1"></i>Titolo</th>
+                        <th scope="col"><i class="bi bi-calendar me-1"></i>Inizio Noleggio</th>
+                        <th scope="col"><i class="bi bi-calendar-x me-1"></i>Scadenza</th>
+                        <th scope="col"><i class="bi bi-info-circle me-1"></i>Stato</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let loan of userLoans" class="loan-row">
+                        <td class="book-title">{{ loan.bookTitle }}</td>
+                        <td>{{ loan.startDate }}</td>
+                        <td>{{ loan.endDate }}</td>
+                        <td>
+                          <span class="badge" [class]="getStatusClass(loan.status)">
+                            {{ loan.status }}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
