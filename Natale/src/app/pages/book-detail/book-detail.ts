@@ -1,4 +1,4 @@
-// book-detail.ts - VERSIONE COMPLETA CON PRENOTAZIONE PERSISTENTE
+// book-detail.ts - VERSIONE CON DURATA PRENOTAZIONE 2 MESI
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -24,6 +24,7 @@ export class BookDetail implements OnInit {
   showPrenotazioneAlert = false;
   currentUser: any = null;
   loadingPrenotazione = false;
+  prenotazioneData: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -120,6 +121,12 @@ export class BookDetail implements OnInit {
       const querySnapshot = await getDocs(q);
       this.bookPrenotato = !querySnapshot.empty;
       
+      // Se c'è una prenotazione, salva i dati
+      if (!querySnapshot.empty) {
+        const prenotazioneDoc = querySnapshot.docs[0];
+        this.prenotazioneData = prenotazioneDoc.data();
+      }
+      
       this.cdr.markForCheck();
     } catch (error: any) {
       console.error('Errore nel controllo prenotazioni:', error);
@@ -157,6 +164,7 @@ export class BookDetail implements OnInit {
       this.book = null;
       this.bookPrenotato = false;
       this.showPrenotazioneAlert = false;
+      this.prenotazioneData = null;
       this.cdr.markForCheck();
 
       setTimeout(() => {
@@ -173,6 +181,19 @@ export class BookDetail implements OnInit {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
+    });
+  }
+
+  // Formatta la data per visualizzazione
+  formatDateDisplay(dateString: string): string {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('it-IT', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   }
 
@@ -198,21 +219,29 @@ export class BookDetail implements OnInit {
           available_copies: this.book.available_copies
         });
 
-        // 2. Crea la prenotazione nel database
+        // 2. Crea la prenotazione nel database (2 mesi = 60 giorni)
         const prenotazioniRef = collection(this.firestore, 'Prenotazioni');
-        await addDoc(prenotazioniRef, {
+        const now = new Date();
+        const scadenza = new Date(now);
+        scadenza.setMonth(scadenza.getMonth() + 2); // Aggiungi 2 mesi
+        
+        const prenotazioneDoc = await addDoc(prenotazioniRef, {
           bookId: this.book.id,
           bookTitle: this.book.title,
           userId: this.currentUser.uid,
           userEmail: this.currentUser.email,
-          dataPrenotazione: new Date().toISOString(),
+          dataPrenotazione: now.toISOString(),
           stato: 'confermata',
-          scadenza: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() // 14 giorni
+          scadenza: scadenza.toISOString()
         });
 
-        // 3. Imposta lo stato di prenotazione
+        // 3. Imposta lo stato di prenotazione e salva i dati
         this.bookPrenotato = true;
         this.showPrenotazioneAlert = true;
+        this.prenotazioneData = {
+          dataPrenotazione: now.toISOString(),
+          scadenza: scadenza.toISOString()
+        };
 
       }
     } catch (error: any) {

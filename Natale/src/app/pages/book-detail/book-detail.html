@@ -145,8 +145,24 @@
               <!-- Bottone Prenotazione / Stato Prenotazione -->
               <div class="mt-4">
                 <div *ngIf="bookPrenotato; else statoPrenotazione">
-                  <div class="alert alert-success mb-0">
+                  <div class="alert alert-success mb-3">
                     ✓ Libro prenotato
+                  </div>
+                  <!-- Dettagli Prenotazione -->
+                  <div class="card border-info mt-3">
+                    <div class="card-body p-3">
+                      <h6 class="card-subtitle mb-2 text-muted">Dettagli Prenotazione</h6>
+                      <div class="text-start small">
+                        <div class="mb-2">
+                          <strong>Data prenotazione:</strong><br>
+                          {{formatDateDisplay(prenotazioneData?.dataPrenotazione)}}
+                        </div>
+                        <div>
+                          <strong>Scadenza:</strong><br>
+                          {{formatDateDisplay(prenotazioneData?.scadenza)}}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <ng-template #statoPrenotazione>
