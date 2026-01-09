@@ -15,6 +15,20 @@
     </div>
   </div>
 
+  <!-- Alert per conferma prenotazione -->
+  <div *ngIf="showPrenotazioneAlert" class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+    <div class="d-flex align-items-center">
+      <div class="flex-shrink-0">
+        <span class="fs-4">✓</span>
+      </div>
+      <div class="flex-grow-1 ms-3">
+        <h5 class="alert-heading mb-1">Libro prenotato con successo!</h5>
+        <p class="mb-0">La tua prenotazione per "{{book?.title}}" è stata registrata.</p>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" (click)="closeAlert()"></button>
+    </div>
+  </div>
+
   <!-- STATI DELL'APPLICAZIONE -->
   <div class="card shadow border-0 overflow-hidden">
     
@@ -56,19 +70,57 @@
 
       <div class="row g-5">
         
-        <!-- Colonna Sinistra (Immagine e Disponibilità) -->
-        <div class="col-lg-4 col-md-5">
-          <!-- Immagine -->
-          <div class="mb-4 shadow-sm rounded overflow-hidden bg-light">
-            <img *ngIf="book?.image" [src]="book.image" [alt]="book.title"
-                 class="img-fluid w-100" (error)="handleImageError($event)">
-            <div *ngIf="!book?.image" class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 400px;">
-              <span>Immagine non disponibile</span>
+        <!-- Colonna Sinistra (Immagine e Dettagli) -->
+        <div class="col-lg-8">
+          <div class="row g-4">
+            <!-- Immagine -->
+            <div class="col-md-6">
+              <div class="shadow-sm rounded overflow-hidden bg-light">
+                <img *ngIf="book?.image" [src]="book.image" [alt]="book.title"
+                     class="img-fluid w-100" (error)="handleImageError($event)">
+                <div *ngIf="!book?.image" class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 400px;">
+                  <span>Immagine non disponibile</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dettagli del libro (affianco all'immagine) -->
+            <div class="col-md-6">
+              <!-- Grid Dettagli -->
+              <div class="row g-3 mb-4">
+                <div class="col-12">
+                  <label class="text-muted small text-uppercase fw-bold">Autore</label>
+                  <p class="h5 border-bottom pb-2">{{book?.author || 'N/A'}}</p>
+                </div>
+                <div class="col-12">
+                  <label class="text-muted small text-uppercase fw-bold">Categoria</label>
+                  <p class="h5 border-bottom pb-2">{{book?.category || 'N/A'}}</p>
+                </div>
+                <div class="col-12">
+                  <label class="text-muted small text-uppercase fw-bold">Anno</label>
+                  <p class="h5 border-bottom pb-2">{{book?.year || 'N/A'}}</p>
+                </div>
+                <div class="col-12">
+                  <label class="text-muted small text-uppercase fw-bold">ISBN</label>
+                  <p class="h5 border-bottom pb-2">{{book?.isbn || 'N/A'}}</p>
+                </div>
+              </div>
+
+              <!-- Descrizione -->
+              <div class="description-box p-3 bg-white border-start border-primary border-4 shadow-sm rounded">
+                <h4 class="mb-2 text-primary">Descrizione</h4>
+                <div class="fs-6 text-secondary" style="line-height: 1.6;">
+                  {{book?.description || 'Nessuna descrizione disponibile per questo libro.'}}
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
+        <!-- Colonna Destra (Disponibilità e Prenotazione) -->
+        <div class="col-lg-4">
           <!-- Card Disponibilità -->
-          <div class="card border bg-light shadow-sm">
+          <div class="card border bg-light shadow-sm h-100">
             <div class="card-body text-center">
               <h5 class="card-title mb-4">Stato Copie</h5>
               <div class="row mb-3">
@@ -89,41 +141,42 @@
                      [style.width.%]="getAvailabilityPercentage()"></div>
               </div>
               <small class="text-muted">{{getAvailabilityPercentage()}}% della collezione</small>
+
+              <!-- Bottone Prenotazione / Stato Prenotazione -->
+              <div class="mt-4">
+                <div *ngIf="bookPrenotato; else statoPrenotazione">
+                  <div class="alert alert-success mb-0">
+                    ✓ Libro prenotato
+                  </div>
+                </div>
+                <ng-template #statoPrenotazione>
+                  <div *ngIf="book?.available_copies > 0">
+                    <button 
+                      class="btn btn-primary btn-lg w-100" 
+                      (click)="prenotaLibro()"
+                      [disabled]="loadingPrenotazione"
+                    >
+                      <span *ngIf="loadingPrenotazione">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Prenotazione in corso...
+                      </span>
+                      <span *ngIf="!loadingPrenotazione">
+                        Prenota Libro
+                      </span>
+                    </button>
+                    <div *ngIf="!currentUser" class="alert alert-warning mt-2 small">
+                      Devi effettuare il login per prenotare
+                    </div>
+                  </div>
+                  <div *ngIf="book?.available_copies <= 0">
+                    <div class="alert alert-danger mb-0">
+                      ⚠️ Nessun libro disponibile
+                    </div>
+                  </div>
+                </ng-template>
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- Colonna Destra (Dettagli e Descrizione) -->
-        <div class="col-lg-8 col-md-7">
-          
-          <!-- Grid Dettagli -->
-          <div class="row g-4 mb-5">
-            <div class="col-sm-6">
-              <label class="text-muted small text-uppercase fw-bold">Autore</label>
-              <p class="h5 border-bottom pb-2">{{book?.author || 'N/A'}}</p>
-            </div>
-            <div class="col-sm-6">
-              <label class="text-muted small text-uppercase fw-bold">Categoria</label>
-              <p class="h5 border-bottom pb-2">{{book?.category || 'N/A'}}</p>
-            </div>
-            <div class="col-sm-6">
-              <label class="text-muted small text-uppercase fw-bold">Anno</label>
-              <p class="h5 border-bottom pb-2">{{book?.year || 'N/A'}}</p>
-            </div>
-            <div class="col-sm-6">
-              <label class="text-muted small text-uppercase fw-bold">ISBN</label>
-              <p class="h5 border-bottom pb-2">{{book?.isbn || 'N/A'}}</p>
-            </div>
-          </div>
-
-          <!-- Descrizione -->
-          <div class="description-box p-4 bg-white border-start border-primary border-4 shadow-sm rounded">
-            <h4 class="mb-3 text-primary">Descrizione</h4>
-            <div class="lead fs-6 text-secondary" style="line-height: 1.8;">
-              {{book?.description || 'Nessuna descrizione disponibile per questo libro.'}}
-            </div>
-          </div>
-
         </div>
       </div>
 

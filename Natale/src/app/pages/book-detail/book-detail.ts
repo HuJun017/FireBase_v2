@@ -1,9 +1,10 @@
-// book-detail.ts - VERSIONE COMPLETA SENZA LOG
+// book-detail.ts - VERSIONE COMPLETA CON PRENOTAZIONE PERSISTENTE
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs } from '@angular/fire/firestore';
 import { RouterModule } from '@angular/router';
+import { Auth, user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-book-detail',
@@ -19,14 +20,31 @@ export class BookDetail implements OnInit {
   error: string | null = null;
   currentTimestamp = new Date();
   isDebugMode = false;
+  bookPrenotato = false;
+  showPrenotazioneAlert = false;
+  currentUser: any = null;
+  loadingPrenotazione = false;
 
   constructor(
     private route: ActivatedRoute,
     private firestore: Firestore,
+    private auth: Auth,
     private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
+    // Ascolta i cambiamenti dell'utente autenticato
+    user(this.auth).subscribe(async (user) => {
+      this.currentUser = user;
+      
+      // Se c'è un utente loggato, controlla se ha già prenotato questo libro
+      if (user && this.book) {
+        await this.checkIfAlreadyPrenotato();
+      }
+      
+      this.cdr.markForCheck();
+    });
+
     await new Promise(resolve => setTimeout(resolve, 100));
 
     const bookId = this.route.snapshot.paramMap.get('id');
@@ -67,6 +85,11 @@ export class BookDetail implements OnInit {
           available_copies: data['available_copies'],
           image: data['image']
         };
+
+        // Controlla se l'utente corrente ha già prenotato questo libro
+        if (this.currentUser) {
+          await this.checkIfAlreadyPrenotato();
+        }
       } else {
         this.error = 'Documento non trovato';
       }
@@ -78,6 +101,28 @@ export class BookDetail implements OnInit {
       setTimeout(() => {
         this.cdr.markForCheck();
       }, 0);
+    }
+  }
+
+  // Controlla se l'utente ha già prenotato questo libro
+  async checkIfAlreadyPrenotato(): Promise<void> {
+    if (!this.currentUser || !this.book) return;
+
+    try {
+      const prenotazioniRef = collection(this.firestore, 'Prenotazioni');
+      const q = query(
+        prenotazioniRef,
+        where('bookId', '==', this.book.id),
+        where('userId', '==', this.currentUser.uid),
+        where('stato', 'in', ['pending', 'confermata'])
+      );
+      
+      const querySnapshot = await getDocs(q);
+      this.bookPrenotato = !querySnapshot.empty;
+      
+      this.cdr.markForCheck();
+    } catch (error: any) {
+      console.error('Errore nel controllo prenotazioni:', error);
     }
   }
 
@@ -110,6 +155,8 @@ export class BookDetail implements OnInit {
       this.loading = true;
       this.error = null;
       this.book = null;
+      this.bookPrenotato = false;
+      this.showPrenotazioneAlert = false;
       this.cdr.markForCheck();
 
       setTimeout(() => {
@@ -127,6 +174,62 @@ export class BookDetail implements OnInit {
       minute: '2-digit',
       second: '2-digit'
     });
+  }
+
+  async prenotaLibro(): Promise<void> {
+    if (!this.isBookAvailable() || this.bookPrenotato || !this.currentUser) {
+      if (!this.currentUser) {
+        alert('Devi effettuare il login per prenotare un libro!');
+      }
+      return;
+    }
+
+    this.loadingPrenotazione = true;
+    this.cdr.markForCheck();
+
+    try {
+      // 1. Aggiorna il conteggio delle copie disponibili nel libro
+      if (this.book.available_copies > 0) {
+        this.book.available_copies--;
+        
+        // Salva nel database (Firestore)
+        const bookRef = doc(this.firestore, 'Library', this.book.id);
+        await updateDoc(bookRef, {
+          available_copies: this.book.available_copies
+        });
+
+        // 2. Crea la prenotazione nel database
+        const prenotazioniRef = collection(this.firestore, 'Prenotazioni');
+        await addDoc(prenotazioniRef, {
+          bookId: this.book.id,
+          bookTitle: this.book.title,
+          userId: this.currentUser.uid,
+          userEmail: this.currentUser.email,
+          dataPrenotazione: new Date().toISOString(),
+          stato: 'confermata',
+          scadenza: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() // 14 giorni
+        });
+
+        // 3. Imposta lo stato di prenotazione
+        this.bookPrenotato = true;
+        this.showPrenotazioneAlert = true;
+
+      }
+    } catch (error: any) {
+      // Ripristina il contatore in caso di errore
+      if (this.book) {
+        this.book.available_copies++;
+      }
+      alert('Errore durante la prenotazione: ' + error.message);
+    } finally {
+      this.loadingPrenotazione = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  closeAlert(): void {
+    this.showPrenotazioneAlert = false;
+    this.cdr.markForCheck();
   }
 
   isBookAvailable(): boolean {
@@ -183,30 +286,6 @@ export class BookDetail implements OnInit {
     }
   }
 
-  borrowBook(): void {
-    if (!this.isBookAvailable()) {
-      alert('Non ci sono copie disponibili!');
-      return;
-    }
-
-    this.book.available_copies--;
-    this.cdr.markForCheck();
-    alert('Libro prenotato con successo!');
-  }
-
-  returnBook(): void {
-    if (!this.book) return;
-
-    if (this.book.available_copies >= this.book.total_copies) {
-      alert('Tutte le copie sono già disponibili!');
-      return;
-    }
-
-    this.book.available_copies++;
-    this.cdr.markForCheck();
-    alert('Libro restituito con successo!');
-  }
-
   generateBookReport(): string {
     if (!this.book) return 'Nessun dato disponibile';
 
@@ -221,6 +300,7 @@ export class BookDetail implements OnInit {
       Disponibilità: ${this.book.available_copies}/${this.book.total_copies}
       Percentuale: ${this.getAvailabilityPercentage()}%
       Stato: ${this.isBookAvailable() ? 'Disponibile' : 'Esaurito'}
+      Prenotato: ${this.bookPrenotato ? 'Sì' : 'No'}
       Data generazione: ${this.formatDate(new Date())}
     `;
   }
