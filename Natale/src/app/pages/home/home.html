@@ -1,54 +1,37 @@
-<!-- Header -->
-<header class="header">
+<!-- Testata della pagina -->
+<header class="navbar">
   <h1>📚 Biblioteca</h1>
-  <button (click)="addNewBook()">Aggiungi un libro</button>
-  <button class="logout-btn" (click)="onLogout()">Logout</button>
+  <div class="buttons">
+    <button class="btn-add" (click)="addNewBook()">+ Aggiungi</button>
+    <button class="btn-logout" (click)="onLogout()">Esci</button>
+  </div>
 </header>
 
-<!-- Contenuto principale -->
-<main class="container">
+<main class="content">
   <h2>Libri disponibili</h2>
 
-  <!-- Lista libri -->
-<section class="books-grid">
-  <!-- Singolo libro -->
-  <article class="book-card" *ngFor="let book of book">
+  <!-- Griglia dei libri -->
+  <section class="grid-container">
     
-    <!-- Immagine libro -->
-    <img *ngIf="book.image" [src]="book.image" alt="{{ book.title }}" class="book-image">
+    <!-- Singola scheda libro -->
+    <article class="card" *ngFor="let book of book">
+      
+      <img *ngIf="book.image" [src]="book.image" class="card-img">
+      
+      <div class="card-body">
+        <h3>{{ book.title }}</h3>
+        <p><strong>Autore:</strong> {{ book.author }}</p>
+        <p class="description">{{ book.description }}</p>
+        
+        <!-- Disponibilità -->
+        <p [ngClass]="book.available_copies > 0 ? 'text-green' : 'text-red'">
+          {{ book.available_copies > 0 ? 'Disponibile' : 'Esaurito' }}
+        </p>
 
-    <!-- Titolo -->
-    <h3>{{ book.title }}</h3>
-
-    <!-- Autore -->
-    <p><strong>Autore:</strong> {{ book.author }}</p>
-
-    <!-- Categoria -->
-    <p><strong>Categoria:</strong> {{ book.category }}</p>
-
-    <!-- Anno -->
-    <p><strong>Anno:</strong> {{ book.year }}</p>
-
-    <!-- Descrizione -->
-    <p><strong>Descrizione:</strong> {{ book.description }}</p>
-
-    <!-- Copie disponibili -->
-    <p
-      class="availability"
-      [ngClass]="book.available_copies > 0 ? 'available' : 'unavailable'"
-    >
-      {{ book.available_copies > 0 
-        ? 'Disponibile (' + book.available_copies + ' di ' + book.total_copies + ' copie)' 
-        : 'Non disponibile' }}
-    </p>
-
-    <!-- Bottone Visualizza -->
-    <button
-      class="view-btn"
-      [routerLink]="['/book', book.id]"
-    >
-      Visualizza
-    </button>
+        <button class="btn-view" [routerLink]="['/book', book.id]">
+          Visualizza Dettagli
+        </button>
+      </div>
 
     </article>
   </section>
