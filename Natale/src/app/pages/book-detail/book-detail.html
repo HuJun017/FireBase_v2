@@ -1,159 +1,137 @@
-<div class="book-detail-container">
+<div class="container py-4">
 
-  <!-- DEBUG - Solo se isDebugMode è true -->
-  <div *ngIf="isDebugMode" class="debug-panel">
-    <h3 class="debug-title">DEBUG PANEL:</h3>
-    <div class="debug-grid">
-      <div class="debug-item">
-        <span class="debug-label">loading:</span>
-        <span [class]="loading ? 'debug-value loading-true' : 'debug-value loading-false'">
-          {{loading}}
-        </span>
+  <!-- DEBUG PANEL (Bootstrap Alert) -->
+  <div *ngIf="isDebugMode" class="alert alert-warning shadow-sm mb-4">
+    <h6 class="alert-heading fw-bold text-uppercase small">Debug Panel</h6>
+    <div class="row g-2 small">
+      <div class="col-auto">
+        <strong>Loading:</strong> 
+        <span [class]="loading ? 'badge bg-success' : 'badge bg-danger'">{{loading}}</span>
       </div>
-      <div class="debug-item">
-        <span class="debug-label">error:</span>
-        <span [class]="error ? 'debug-value error-true' : 'debug-value error-false'">
-          {{error || 'null'}}
-        </span>
+      <div class="col-auto">
+        <strong>Error:</strong> 
+        <span class="text-danger">{{error || 'null'}}</span>
       </div>
     </div>
   </div>
 
   <!-- STATI DELL'APPLICAZIONE -->
-  <div class="content-wrapper">
-
-    <!-- Caricamento -->
-    <div *ngIf="loading" class="loading-state">
-      <div class="spinner"></div>
-      <h1>Caricamento in corso...</h1>
-      <p>Stiamo recuperando i dati del libro</p>
+  <div class="card shadow border-0 overflow-hidden">
+    
+    <!-- Caricamento (Spinner Bootstrap) -->
+    <div *ngIf="loading" class="card-body text-center py-5">
+      <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+      <h3 class="text-secondary">Caricamento in corso...</h3>
+      <p class="text-muted">Stiamo recuperando i dati del libro</p>
     </div>
 
-    <!-- Errore -->
-    <div *ngIf="!loading && error" class="error-state">
-      <div class="error-icon">⚠️</div>
-      <h1>Errore nel caricamento</h1>
-      <p class="error-message">
+    <!-- Errore (Alert Bootstrap) -->
+    <div *ngIf="!loading && error" class="card-body text-center py-5">
+      <div class="display-1 text-danger mb-3">⚠️</div>
+      <h2 class="text-dark">Errore nel caricamento</h2>
+      <div class="alert alert-danger d-inline-block px-5">
         {{error}}
-      </p>
-      <button (click)="reloadData()" class="retry-button">
+      </div>
+      <br>
+      <button (click)="reloadData()" class="btn btn-primary btn-lg mt-3 px-5">
         Riprova
       </button>
     </div>
 
-    <!-- Dati libro -->
-    <div *ngIf="!loading && !error" class="book-data">
+    <!-- DATI LIBRO -->
+    <div *ngIf="!loading && !error" class="card-body p-4 p-md-5">
       
-      <!-- Header -->
-      <div class="book-header">
-        <span [class]="book?.available_copies > 0 ? 'availability-badge available' : 'availability-badge unavailable'">
-          {{book?.available_copies > 0 ? 'Disponibile' : 'Esaurito'}}
-        </span>
-        <h1 class="book-title">
-          {{book?.title || 'Titolo non disponibile'}}
-        </h1>
+      <!-- Header del Libro -->
+      <div class="d-md-flex justify-content-between align-items-start mb-4">
+        <div>
+          <h1 class="display-5 fw-bold text-dark mb-2">{{book?.title}}</h1>
+          <span [class]="book?.available_copies > 0 ? 'badge bg-success px-3 py-2' : 'badge bg-danger px-3 py-2'">
+            {{book?.available_copies > 0 ? 'Disponibile' : 'Esaurito'}}
+          </span>
+        </div>
+        <button class="btn btn-outline-secondary mt-3 mt-md-0" routerLink="/home">
+          ← Torna alla lista
+        </button>
       </div>
 
-      <!-- Layout a due colonne -->
-      <div class="two-column-layout">
+      <div class="row g-5">
         
-        <!-- Colonna sinistra -->
-        <div class="left-column">
+        <!-- Colonna Sinistra (Immagine e Disponibilità) -->
+        <div class="col-lg-4 col-md-5">
           <!-- Immagine -->
-          <div class="image-container">
-            <img *ngIf="book?.image" 
-                 [src]="book.image" 
-                 [alt]="book.title"
-                 (error)="handleImageError($event)"
-                 class="book-image">
-            <div *ngIf="!book?.image" class="image-placeholder">
-              Immagine non disponibile
+          <div class="mb-4 shadow-sm rounded overflow-hidden bg-light">
+            <img *ngIf="book?.image" [src]="book.image" [alt]="book.title"
+                 class="img-fluid w-100" (error)="handleImageError($event)">
+            <div *ngIf="!book?.image" class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 400px;">
+              <span>Immagine non disponibile</span>
             </div>
           </div>
 
-          <!-- Disponibilità -->
-          <div class="availability-container">
-            <h3>Disponibilità</h3>
-            <div class="availability-stats">
-              <div class="stat-item">
-                <span class="stat-label">Copie disponibili:</span>
-                <span class="stat-value">
-                  {{book?.available_copies ?? 0}}
-                </span>
+          <!-- Card Disponibilità -->
+          <div class="card border bg-light shadow-sm">
+            <div class="card-body text-center">
+              <h5 class="card-title mb-4">Stato Copie</h5>
+              <div class="row mb-3">
+                <div class="col border-end">
+                  <small class="text-muted d-block text-uppercase">Disponibili</small>
+                  <span class="h3 fw-bold">{{book?.available_copies ?? 0}}</span>
+                </div>
+                <div class="col">
+                  <small class="text-muted d-block text-uppercase">Totali</small>
+                  <span class="h3 fw-bold">{{book?.total_copies ?? 0}}</span>
+                </div>
               </div>
-              <div class="stat-item">
-                <span class="stat-label">Copie totali:</span>
-                <span class="stat-value">
-                  {{book?.total_copies ?? 0}}
-                </span>
+              
+              <!-- Progress Bar Bootstrap -->
+              <div class="progress mb-2" style="height: 10px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                     role="progressbar" 
+                     [style.width.%]="getAvailabilityPercentage()"></div>
               </div>
+              <small class="text-muted">{{getAvailabilityPercentage()}}% della collezione</small>
             </div>
-            <div class="availability-bar">
-              <div [style.width.%]="getAvailabilityPercentage()" class="availability-fill"></div>
-            </div>
-            <p class="availability-percentage">
-              {{getAvailabilityPercentage()}}% disponibile
-            </p>
           </div>
         </div>
 
-        <!-- Colonna destra -->
-        <div class="right-column">
-          <!-- Dettagli libro -->
-          <div class="book-details-grid">
-            <div class="detail-item">
-              <span class="detail-label">Autore:</span>
-              <span class="detail-value">
-                {{book?.author || 'N/A'}}
-              </span>
+        <!-- Colonna Destra (Dettagli e Descrizione) -->
+        <div class="col-lg-8 col-md-7">
+          
+          <!-- Grid Dettagli -->
+          <div class="row g-4 mb-5">
+            <div class="col-sm-6">
+              <label class="text-muted small text-uppercase fw-bold">Autore</label>
+              <p class="h5 border-bottom pb-2">{{book?.author || 'N/A'}}</p>
             </div>
-            <div class="detail-item">
-              <span class="detail-label">Categoria:</span>
-              <span class="detail-value">
-                {{book?.category || 'N/A'}}
-              </span>
+            <div class="col-sm-6">
+              <label class="text-muted small text-uppercase fw-bold">Categoria</label>
+              <p class="h5 border-bottom pb-2">{{book?.category || 'N/A'}}</p>
             </div>
-            <div class="detail-item">
-              <span class="detail-label">Anno di pubblicazione:</span>
-              <span class="detail-value">
-                {{book?.year || 'N/A'}}
-              </span>
+            <div class="col-sm-6">
+              <label class="text-muted small text-uppercase fw-bold">Anno</label>
+              <p class="h5 border-bottom pb-2">{{book?.year || 'N/A'}}</p>
             </div>
-            <div class="detail-item">
-              <span class="detail-label">ISBN:</span>
-              <span class="detail-value">
-                {{book?.isbn || 'N/A'}}
-              </span>
+            <div class="col-sm-6">
+              <label class="text-muted small text-uppercase fw-bold">ISBN</label>
+              <p class="h5 border-bottom pb-2">{{book?.isbn || 'N/A'}}</p>
             </div>
           </div>
 
           <!-- Descrizione -->
-          <div *ngIf="book?.description" class="description-section">
-            <h3>Descrizione</h3>
-            <div class="description-content">
-              {{book.description}}
+          <div class="description-box p-4 bg-white border-start border-primary border-4 shadow-sm rounded">
+            <h4 class="mb-3 text-primary">Descrizione</h4>
+            <div class="lead fs-6 text-secondary" style="line-height: 1.8;">
+              {{book?.description || 'Nessuna descrizione disponibile per questo libro.'}}
             </div>
           </div>
 
-          <!-- Messaggio se nessuna descrizione -->
-          <div *ngIf="!book?.description" class="no-description">
-            <p>Nessuna descrizione disponibile per questo libro</p>
-          </div>
-
-          <!-- Note -->
-          <div class="note-section">
-            <div class="note-content">
-              <strong>Nota:</strong> Tutti i dati sono sempre visibili e aggiornati in tempo reale
-            </div>
-          </div>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="footer-section">
-        <div class="last-update">
+      <div class="mt-5 pt-3 border-top text-end">
+        <small class="text-muted fst-italic">
           Ultimo aggiornamento: {{formatDate(currentTimestamp)}}
-        </div>
+        </small>
       </div>
     </div>
   </div>
