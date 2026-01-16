@@ -20,6 +20,10 @@ export class Home {
   categories: string[] = [];
   loading = true;
   error = false;
+  
+  // Dati utente
+  currentUser: any = null;
+  userRole: string = '';
 
   /*----------Constructor-----------*/
   constructor(
@@ -32,7 +36,38 @@ export class Home {
   /*------------------------*/
 
   ngOnInit(): void {
+    this.loadUserData();
     this.loadBooks();
+  }
+
+  /*----- funzione per recuperare i dati dell'utente corrente ----------*/
+  loadUserData(): void {
+    this.homeService.getUsers().subscribe({
+      next: (users) => {
+        // Recupera l'email dell'utente loggato dal localStorage o authService
+        const loggedUserEmail = this.authService.getUserEmail(); // o localStorage.getItem('userEmail')
+        
+        if (loggedUserEmail) {
+          // Trova l'utente corrente nell'array di tutti gli utenti
+          this.currentUser = users.find((user: any) => user.email === loggedUserEmail);
+          
+          if (this.currentUser) {
+            this.userRole = this.currentUser.role || '';
+            console.log('Utente corrente:', this.currentUser);
+            console.log('Ruolo utente:', this.userRole);
+          } else {
+            console.warn('Utente non trovato nella lista');
+          }
+        } else {
+          console.error('Email utente non disponibile');
+        }
+        
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Errore nel caricamento dati utente', err);
+      }
+    });
   }
 
   /*----- funzione per caricare i libri dal HomeService ----------*/
@@ -98,6 +133,18 @@ export class Home {
   // Funzione per ottimizzare il rendering della lista (trackBy)
   trackByBookId(index: number, book: any): any {
     return book.id;
+  }
+
+  /*-------funzione helper per verificare se l'utente è admin-------*/
+  isAdmin(): boolean {
+    return this.userRole === 'admin' || this.userRole === 'Admin';
+  }
+
+
+  // DA VERIFICARNE L'UTILITA
+  /*-------funzione helper per verificare se l'utente è un normale user-------*/
+  isUser(): boolean {
+    return this.userRole === 'user' || this.userRole === 'User';
   }
 
 }
