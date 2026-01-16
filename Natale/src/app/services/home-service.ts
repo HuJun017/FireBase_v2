@@ -11,7 +11,6 @@ export class HomeService {
 
   constructor( 
     private firestore: Firestore,
-    private authService: AuthService,
   ) {}
 
 // Ottieni la collezione "Library"
@@ -19,9 +18,19 @@ export class HomeService {
     return collection(this.firestore, 'Library');
   }
 
+  private getUsersCollection() {
+    return collection(this.firestore, "users");
+  }
+
   // Recupera tutti i libri
   getBook(): Observable<any[]> {
     const colRef = this.getBooksCollection();
+    return collectionData(colRef, { idField: 'id' }) as Observable<any[]>;
+  }
+
+  // Recuper gli utenti
+  getUsers(): Observable<any[]> {
+    const colRef = this.getUsersCollection();
     return collectionData(colRef, { idField: 'id' }) as Observable<any[]>;
   }
 
