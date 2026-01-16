@@ -47,6 +47,11 @@ export class AuthService {
     return this.auth.currentUser;
   }
 
+  getUserEmail(): string | null {
+    const user = this.auth.currentUser;
+    return user?.email || null;
+  }
+
   private async createUserInFirestoreIfNotExists(user: User) {
 
     const userRef = doc(this.firestore, `users/${user.uid}`);
@@ -57,7 +62,8 @@ export class AuthService {
         uid: user.uid,
         email: user.email,
         provider: user.providerData[0]?.providerId,
-        createdAt: new Date()
+        createdAt: new Date(),
+        role: 'user'
       });
     }
 
