@@ -1,10 +1,10 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow-sm">
-  <div class="container-fluid">
-    <a class="navbar-brand d-flex align-items-center">
+<nav class="navbar navbar-dark bg-gradient-custom shadow-sm">
+  <div class="container-fluid px-4">
+    <span class="navbar-brand fs-3 fw-bold">
       <i class="bi bi-house-door-fill me-2"></i>
-      <span class="brand-text fw-bold">Biblioteca Digitale</span>
-    </a>
+      <span class="brand-text">Biblioteca Digitale</span>
+    </span>
   </div>
 </nav>
 
@@ -12,13 +12,13 @@
 <div class="login-container">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-xl-6 col-lg-7 col-md-8">
+      <div class="col-lg-6 col-md-8">
         <div class="login-card card">
           <!-- Header della card -->
           <div class="card-header text-center py-4">
             <i class="bi bi-shield-lock-fill card-header-icon text-white display-4 mb-3"></i>
             <h2 class="card-title text-white mb-0 fw-bold">Accedi al tuo Account</h2>
-            <p class="text-white-50 mb-0 mt-2">Bentornato! Inserisci le tue credenziali</p>
+            <p class="subtitle-text mb-0 mt-2">Bentornato! Inserisci le tue credenziali</p>
           </div>
 
           <!-- Corpo della card -->
@@ -28,7 +28,7 @@
               <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 <strong>Errore!</strong> {{ error() }}
-                <button type="button" class="btn-close" (click)="clearError()"></button>
+                <button type="button" class="btn-close btn-close-white" (click)="clearError()"></button>
               </div>
             }
 
@@ -37,7 +37,7 @@
               <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i>
                 {{ successMessage() }}
-                <button type="button" class="btn-close" (click)="clearSuccess()"></button>
+                <button type="button" class="btn-close btn-close-white" (click)="clearSuccess()"></button>
               </div>
             }
 
@@ -46,36 +46,33 @@
               <!-- Campo Email -->
               <div class="form-group mb-4">
                 <label for="email" class="form-label fw-semibold">
-                  <i class="bi bi-envelope-fill me-2 text-primary"></i>Email
+                  <i class="bi bi-envelope me-2"></i>Email
                 </label>
                 <div class="input-group">
                   <span class="input-group-text">
-                    <i class="bi bi-person-circle"></i>
+                    <i class="bi bi-envelope-fill"></i>
                   </span>
                   <input
                     type="email"
                     id="email"
-                    class="form-control"
+                    class="form-control form-control-lg"
                     [(ngModel)]="email"
                     name="email"
                     required
                     email
                     #emailInput="ngModel"
-                    placeholder="Inserisci la tua email"
-                    [class.is-invalid]="emailInput.invalid && emailInput.touched"
-                    [class.is-valid]="emailInput.valid && emailInput.touched"
+                    placeholder="nome@esempio.com"
                   />
-                  <div class="invalid-feedback">
-                    <i class="bi bi-exclamation-circle me-1"></i>
-                    Inserisci un indirizzo email valido.
-                  </div>
+                </div>
+                <div *ngIf="emailInput.invalid && emailInput.touched" class="invalid-feedback d-block">
+                  Inserisci un indirizzo email valido
                 </div>
               </div>
 
               <!-- Campo Password -->
               <div class="form-group mb-4">
                 <label for="password" class="form-label fw-semibold">
-                  <i class="bi bi-key-fill me-2 text-primary"></i>Password
+                  <i class="bi bi-lock me-2"></i>Password
                 </label>
                 <div class="input-group">
                   <span class="input-group-text">
@@ -84,20 +81,17 @@
                   <input
                     type="password"
                     id="password"
-                    class="form-control"
+                    class="form-control form-control-lg"
                     [(ngModel)]="password"
                     name="password"
                     required
                     minlength="6"
                     #passwordInput="ngModel"
-                    placeholder="Inserisci la password"
-                    [class.is-invalid]="passwordInput.invalid && passwordInput.touched"
-                    [class.is-valid]="passwordInput.valid && passwordInput.touched"
+                    placeholder="Minimo 6 caratteri"
                   />
-                  <div class="invalid-feedback">
-                    <i class="bi bi-exclamation-circle me-1"></i>
-                    La password deve essere di almeno 6 caratteri.
-                  </div>
+                </div>
+                <div *ngIf="passwordInput.invalid && passwordInput.touched" class="invalid-feedback d-block">
+                  La password deve essere di almeno 6 caratteri
                 </div>
               </div>
 
@@ -105,7 +99,7 @@
               <div class="d-grid mb-4">
                 <button
                   type="submit"
-                  class="btn btn-primary btn-lg"
+                  class="btn btn-primary btn-lg fw-bold"
                   [disabled]="isLoading() || loginForm.invalid"
                 >
                   @if (isLoading()) {
@@ -121,11 +115,11 @@
 
             <!-- Link alla registrazione -->
             <div class="text-center">
-              <p class="mb-2 text-muted">Non hai ancora un account?</p>
-              <a routerLink="/register" class="btn btn-outline-primary">
+              <p class="mb-2 text-dark">Non hai ancora un account?</p>
+              <button type="button" routerLink="/register" class="btn btn-outline-primary fw-semibold">
                 <i class="bi bi-person-plus-fill me-2"></i>
                 Registrati ora
-              </a>
+              </button>
             </div>
           </div>
 
