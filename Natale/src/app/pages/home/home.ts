@@ -1,11 +1,11 @@
-import { Component, OnInit} from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HomeService } from '../../services/home-service';
 import { ChangeDetectorRef } from '@angular/core';
 
+import { AuthService } from '../../services/auth-service';
+import { HomeService } from '../../services/home-service';
 
 @Component({
   selector: 'app-home',
@@ -20,12 +20,12 @@ export class Home {
   categories: string[] = [];
   loading = true;
   error = false;
-  
-  // Dati utente
-  currentUser: any = null;
-  userRole: string = '';
 
-  /*----------Constructor-----------*/
+  currentUser: any = null;
+  userRole: boolean | null = null; // true = admin
+
+  selectedCategory = 'Tutti';
+
   constructor(
     private homeService: HomeService,
     private authService: AuthService,
@@ -33,58 +33,41 @@ export class Home {
     private cdr: ChangeDetectorRef
   ) {}
 
-  /*------------------------*/
-
   ngOnInit(): void {
     this.loadUserData();
     this.loadBooks();
   }
 
-  /*----- funzione per recuperare i dati dell'utente corrente ----------*/
   loadUserData(): void {
     this.homeService.getUsers().subscribe({
       next: (users) => {
-        // Recupera l'email dell'utente loggato dal localStorage o authService
-        const loggedUserEmail = this.authService.getUserEmail(); // o localStorage.getItem('userEmail')
-        
-        if (loggedUserEmail) {
-          // Trova l'utente corrente nell'array di tutti gli utenti
-          this.currentUser = users.find((user: any) => user.email === loggedUserEmail);
-          
-          if (this.currentUser) {
-            this.userRole = this.currentUser.role || '';
-            console.log('Utente corrente:', this.currentUser);
-            console.log('Ruolo utente:', this.userRole);
-          } else {
-            console.warn('Utente non trovato nella lista');
-          }
-        } else {
-          console.error('Email utente non disponibile');
-        }
-        
+        const email = this.authService.getUserEmail();
+        if (!email) return;
+
+        this.currentUser = users.find((u: any) => u.email === email);
+        if (!this.currentUser) return;
+
+        this.userRole = this.currentUser.role === true;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Errore nel caricamento dati utente', err);
-      }
+      error: (err) => console.error('Errore caricamento utente', err)
     });
   }
 
-  /*----- funzione per caricare i libri dal HomeService ----------*/
   loadBooks(): void {
     this.loading = true;
     this.error = false;
+
     this.homeService.getBook().subscribe({
       next: (data) => {
-        console.log('Libri caricati correttamente');
-        this.filteredBooks = data;
-        this.categories = [...new Set(data.map((b: any) => b.category))].filter(c => c);
         this.book = data;
+        this.filteredBooks = data;
+        this.categories = [...new Set(data.map((b: any) => b.category))].filter(Boolean);
         this.loading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Errore nel caricamento dei libri', err);
+        console.error('Errore caricamento libri', err);
         this.error = true;
         this.loading = false;
         this.cdr.detectChanges();
@@ -92,59 +75,36 @@ export class Home {
     });
   }
 
-  /*-------funzione di logout-------*/
   async onLogout() {
-    try {
-      await this.authService.logout();
-      this.router.navigate(['/login']);
-    } catch (error) {
-      console.error('Errore durante il logout:', error);
-    }
+    await this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
-  /*-------funzione per navigare alla pagina di aggiunta libro-------*/
   addNewBook() {
     this.router.navigate(['/new-book']);
   }
 
-  selectedCategory: string = 'Tutti';
-
-  // Questa funzione viene chiamata quando clicchi su una categoria
   filterByCategory(category: string) {
     this.selectedCategory = category;
-
-    if (category === 'Tutti') {
-      this.filteredBooks = this.book; // Mostra tutto
-    } else {
-      this.filteredBooks = this.book.filter(b => b.category === category);
-    }
+    this.filteredBooks =
+      category === 'Tutti'
+        ? this.book
+        : this.book.filter(b => b.category === category);
   }
 
-  // Funzione per ottenere il conteggio dei libri per categoria
   getBooksCountByCategory(category: string): number {
     return this.book.filter(b => b.category === category).length;
   }
 
-  // Funzione per ottenere il conteggio totale dei libri disponibili
   getAvailableBooksCount(): number {
-    return this.book.reduce((total, book) => total + (book.available_copies || 0), 0);
+    return this.book.reduce((tot, b) => tot + (b.available_copies || 0), 0);
   }
 
-  // Funzione per ottimizzare il rendering della lista (trackBy)
   trackByBookId(index: number, book: any): any {
     return book.id;
   }
 
-  /*-------funzione helper per verificare se l'utente è admin-------*/
   isAdmin(): boolean {
-    return this.userRole === 'admin' || this.userRole === 'Admin';
+    return this.userRole === true;
   }
-
-
-  // DA VERIFICARNE L'UTILITA
-  /*-------funzione helper per verificare se l'utente è un normale user-------*/
-  isUser(): boolean {
-    return this.userRole === 'user' || this.userRole === 'User';
-  }
-
 }
