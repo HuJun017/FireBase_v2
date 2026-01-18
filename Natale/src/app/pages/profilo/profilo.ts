@@ -13,6 +13,7 @@ import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 })
 export class Profilo implements OnInit {
   userEmail: string = '';
+  userRole: boolean = false;
   userLoans: any[] = [];
   loading = true;
 
@@ -27,9 +28,25 @@ export class Profilo implements OnInit {
     this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.userEmail = user.email || '';
+        this.loadUserRole(user.uid);
         this.loadUserLoans(user.uid);
       } else {
         this.loading = false;
+      }
+    });
+  }
+
+  loadUserRole(userId: string): void {
+    this.homeService.getUsers().subscribe({
+      next: (users) => {
+        const currentUser = users.find(u => u.id === userId);
+        if (currentUser && currentUser.role !== undefined) {
+          this.userRole = currentUser.role;
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Errore nel caricamento del ruolo utente:', err);
       }
     });
   }

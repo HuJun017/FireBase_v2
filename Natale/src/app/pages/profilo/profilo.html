@@ -2,7 +2,7 @@
   <!-- Header con gradiente come la home -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow border-0">
     <div class="container-fluid px-4">
-      <a class="navbar-brand fs-3 fw-bold" href="#">📚 <span class="brand-text">Biblioteca Viva</span></a>
+      <a class="navbar-brand fs-3 fw-bold"><span class="brand-text">Biblioteca Digitale</span></a>
       <div class="ms-auto">
         <button class="btn btn-light fw-bold text-primary me-2 shadow-sm" routerLink="/home">← Home</button>
       </div>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="info-item">
                   <label class="info-label">Stato Account</label>
-                  <span class="badge badge-active">Attivo</span>
+                  <span class="badge badge-active">{{ userRole ? 'Admin' : 'User' }}</span>
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@
                   <div class="no-loans-icon mb-3">📚</div>
                   <h5 class="text-muted">Nessun libro noleggiato al momento</h5>
                   <p class="text-muted small">I tuoi prestiti appariranno qui quando prenoterai un libro</p>
-                  <button class="btn btn-primary mt-3" routerLink="/home">
+                  <button class="btn btn-primary mt-3 text-dark" routerLink="/home">
                     <i class="bi bi-search me-2"></i>Esplora Libri
                   </button>
                 </div>
