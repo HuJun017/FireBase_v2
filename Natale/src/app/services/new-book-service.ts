@@ -49,6 +49,7 @@ export class NewBookService {
       year: bookData.year || null,
       description: bookData.description || '',
       image: bookData.image || '',
+      ISBN: bookData.ISBN,
       total_copies: bookData.total_copies || 0,
       available_copies: bookData.available_copies || 0,
       created_at: new Date(),
