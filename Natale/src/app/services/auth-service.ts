@@ -63,7 +63,7 @@ export class AuthService {
         email: user.email,
         provider: user.providerData[0]?.providerId,
         createdAt: new Date(),
-        role: 'user'
+        role: false
       });
     }
 
