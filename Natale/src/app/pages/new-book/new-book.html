@@ -27,6 +27,19 @@
           <input type="text" name="author" [(ngModel)]="newBook.author" required placeholder="Nome dell'autore">
         </div>
 
+        <!-- Campo ISBN -->
+        <div class="input-group">
+          <label>ISBN</label>
+          <input 
+            type="text" 
+            name="ISBN" 
+            [(ngModel)]="newBook.ISBN" 
+            placeholder="Es: 978-88-04-66259-2"
+            pattern="^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$"
+            title="Inserisci un ISBN valido (es: 978-88-04-66259-2)">
+          <small class="text-muted">Formato: ISBN-10 o ISBN-13 (opzionale)</small>
+        </div>
+
         <!-- Categoria e Anno (Due colonne) -->
         <div class="flex-row">
           <div class="input-group">
