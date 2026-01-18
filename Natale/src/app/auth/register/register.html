@@ -1,11 +1,11 @@
 <div class="register-container">
-  <!-- Navbar con gradiente come nelle altre pagine -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow border-0">
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-gradient-custom shadow border-0">
     <div class="container-fluid px-4">
-      <a class="navbar-brand fs-3 fw-bold" href="#" routerLink="/login">
-        <i class="bi bi-arrow-left me-2"></i>
-        📚 <span class="brand-text">Biblioteca Viva</span>
-      </a>
+      <span class="navbar-brand fs-3 fw-bold">
+        <i class="bi bi-arrow-left me-2" routerLink="/login" style="cursor: pointer;"></i>
+        📚 <span class="brand-text">Biblioteca Digitale</span>
+      </span>
     </div>
   </nav>
 
@@ -20,7 +20,7 @@
                 <i class="bi bi-person-plus-fill fs-1"></i>
               </div>
               <h2 class="mb-2 fw-bold">Crea il tuo Account</h2>
-              <p class="mb-0 opacity-75">Unisciti alla nostra biblioteca digitale</p>
+              <p class="mb-0 subtitle-text">Unisciti alla nostra biblioteca digitale</p>
             </div>
 
             <div class="card-body p-4 p-md-5">
@@ -28,14 +28,14 @@
               <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 <strong>Errore:</strong> {{ error }}
-                <button type="button" class="btn-close" (click)="clearError()"></button>
+                <button type="button" class="btn-close btn-close-white" (click)="clearError()"></button>
               </div>
 
               <!-- Messaggio di successo -->
               <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i>
                 {{ successMessage }}
-                <button type="button" class="btn-close" (click)="clearSuccess()"></button>
+                <button type="button" class="btn-close btn-close-white" (click)="clearSuccess()"></button>
               </div>
 
               <form (ngSubmit)="onRegister()" #registerForm="ngForm">
@@ -54,7 +54,7 @@
                       name="email"
                       [(ngModel)]="email"
                       class="form-control form-control-lg"
-                      placeholder="Inserisci la tua email"
+                      placeholder="nome@esempio.com"
                       required
                       email
                       #emailInput="ngModel"
@@ -80,7 +80,7 @@
                       name="password"
                       [(ngModel)]="password"
                       class="form-control form-control-lg"
-                      placeholder="Crea una password sicura"
+                      placeholder="Minimo 6 caratteri"
                       required
                       minlength="6"
                       #passwordInput="ngModel"
@@ -112,11 +112,11 @@
 
                 <!-- Link al login -->
                 <div class="text-center">
-                  <p class="mb-2 text-muted">Hai già un account?</p>
-                  <a routerLink="/login" class="btn btn-outline-primary fw-semibold">
+                  <p class="mb-2 text-dark">Hai già un account?</p>
+                  <button type="button" routerLink="/login" class="btn btn-outline-primary fw-semibold">
                     <i class="bi bi-box-arrow-in-right me-2"></i>
                     Accedi
-                  </a>
+                  </button>
                 </div>
               </form>
             </div>
@@ -133,4 +133,4 @@
       </div>
     </div>
   </div>
-
+</div>
