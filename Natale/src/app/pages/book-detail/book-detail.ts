@@ -81,6 +81,7 @@ export class BookDetail implements OnInit {
           author: data['author'],
           category: data['category'],
           year: data['year'],
+          ISBN: data['ISBN'],
           description: data['description'],
           total_copies: data['total_copies'],
           available_copies: data['available_copies'],
